@@ -5,17 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 
-class ConfigTypeController extends BaseController
+class SectionController extends BaseController
 {
     public function index() {
         $json = array();
-        $listConfigType = $this->database->getReference('mst_config_type')->getValue();
-        if($listConfigType){
-          $json = json_encode($listConfigType);   
+        $listSection = $this->database->getReference('mst_section')->getValue();
+        if($listSection){
+          $json = json_encode($listSection);   
         } 
         return response([
             'error' => false,
-            'data' => compact('listConfigType', $json)
+            'data' => compact('listSection', $json)
         ], 200);
     }
 
@@ -24,17 +24,18 @@ class ConfigTypeController extends BaseController
         $json = null;
         $key = null;
         $data = array(
-            'cty_config_name' => $request->cty_config_name,
-            'cty_config_descrip' => $request->cty_config_descrip,
-            'cty_flag' => 1,
+            'sec_vietnamese' => $request->sec_vietnamese,
+            'sec_japanese' => $request->sec_japanese,
+            'sec_description' => $request->sec_description,
+            'sec_flag ' => 1,
         );
         //check duplicate username
-        $reference = $this->database->getReference('mst_config_type')->getValue();
+        $reference = $this->database->getReference('mst_section')->getValue();
         $errorDuplicate = false;
         if ($reference) {
             foreach ($reference as $key => $value) {
                 if (is_array($value)) {
-                    if ($data['cty_config_name'] == $value['cty_config_name']) {
+                    if ($data['sec_vietnamese'] == $value['sec_vietnamese']) {
                         $errorDuplicate = true;
                     }
                 }
@@ -47,10 +48,10 @@ class ConfigTypeController extends BaseController
                     ], 200);
         }
         //insert
-        $configTypeId = $this->database->getReference('mst_config_type')->push($data)->getKey();
+        $configTypeId = $this->database->getReference('mst_section')->push($data)->getKey();
         //get data
         if ($configTypeId) {
-            $currentConfigType = $this->database->getReference('mst_config_type/' . $configTypeId)->getValue();
+            $currentConfigType = $this->database->getReference('mst_section/' . $configTypeId)->getValue();
             $error = false;
             $json = json_encode($currentConfigType);
             $key = $configTypeId;
@@ -65,44 +66,45 @@ class ConfigTypeController extends BaseController
     public function update(Request $request) {
         $error = true;
         $json = 'Not update, something wrong !';
-        $keyConfigType = isset($request->keyConfigType) ? $request->keyConfigType : NULL;
-        if (!$keyConfigType) {
+        $keySection = isset($request->keySection) ? $request->keySection : NULL;
+        if (!$keySection) {
             return response([
                 'error' => true,
-                'data' => 'Key config type not exist !'
+                'data' => 'Key section not exist !'
             ], 200);
         }
         $data = array(
-            'cty_config_name' => $request->cty_config_name,
-            'cty_config_descrip' => $request->cty_config_descrip,
+            'sec_vietnamese' => $request->sec_vietnamese,
+            'sec_japanese' => $request->sec_japanese,
+            'sec_description' => $request->sec_description,
             'acc_flag' => 1,
         );
         //check duplicate username
-        $reference = $this->database->getReference('mst_config_type')->getValue();
+        $reference = $this->database->getReference('mst_section')->getValue();
         $errorDuplicate = false;
         $keyExist = false;
         foreach ($reference as $key => $value) {
-            if (is_array($value) && $keyConfigType != $key) {
-                if ($data['cty_config_name'] == $value['cty_config_name']) {
+            if (is_array($value) && $keySection != $key) {
+                if ($data['sec_vietnamese'] == $value['sec_vietnamese']) {
                     $errorDuplicate = true;
                 }
             }
-            if ($keyConfigType == $key) {
+            if ($keySection == $key) {
                 $keyExist = true;
             }
         }
         if ($errorDuplicate) {
             return response([
                 'error' => true,
-                'data' => 'Config type is duplicate !'
+                'data' => 'Section is duplicate !'
                     ], 200);
         }
         //check key exist
         if ($keyExist) {
             //update
-            $this->database->getReference('mst_config_type/' . $keyConfigType)->update($data);
+            $this->database->getReference('mst_section/' . $keySection)->update($data);
             //get data
-            $currentConfigType = $this->database->getReference('mst_config_type/' . $keyConfigType)->getValue();
+            $currentConfigType = $this->database->getReference('mst_section/' . $keySection)->getValue();
             $error = false;
             $json = json_encode($currentConfigType);
         }
@@ -113,15 +115,15 @@ class ConfigTypeController extends BaseController
     }
 
     public function delete(Request $request) {
-        $keyConfigType = isset($request->keyConfigType) ? $request->keyConfigType : NULL;
-        if (!$keyConfigType) {
+        $keySection = isset($request->keySection) ? $request->keySection : NULL;
+        if (!$keySection) {
             return response([
                 'error' => true,
-                'data' => 'Key account not exist !'
+                'data' => 'Key section not exist !'
             ], 200);
         }
         //delete
-        $this->database->getReference('mst_config_type/' . $keyConfigType)->remove();
+        $this->database->getReference('mst_section/' . $keySection)->remove();
         return response([
             'error' => false,
         ], 200);

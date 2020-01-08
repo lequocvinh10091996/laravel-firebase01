@@ -88,8 +88,8 @@
     <li class="@if($controllername == 'AccountController' ){{'active'}}@endif">
       <a href="{{ url('/account/index') }}"><i class="icon icon-home"></i> <span>Account</span></a> 
     </li>
-    <li class="@if($controllername == 'ConfigTypeController' ){{'active'}}@endif">
-      <a href="{{ url('/configtype/index') }}"><i class="icon icon-inbox"></i> <span>Config type</span></a> 
+    <li class="@if($controllername == 'SectionController' ){{'active'}}@endif">
+      <a href="{{ url('/section/index') }}"><i class="icon icon-inbox"></i> <span>Section</span></a> 
     </li>
     <li class="@if($controllername == 'TranslateMeanController' ){{'active'}}@endif">
       <a href="{{ url('/translatemean/index') }}"><i class="icon icon-th"></i> <span>Translate mean</span></a> 

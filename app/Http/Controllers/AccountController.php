@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use Illuminate\Support\Facades\Crypt;
 
 class AccountController extends BaseController
 {
@@ -25,10 +26,14 @@ class AccountController extends BaseController
         $key = null;
         $data = array(
             'acc_username' => $request->acc_username,
-            'acc_password' => $request->acc_password,
+            'acc_password' => Crypt::encryptString($request->acc_password),
             'acc_email' => $request->acc_email,
             'acc_flag' => 1,
         );
+//        $encrypted = Crypt::encryptString('Hello world.');
+//
+//$decrypted = Crypt::decryptString($encrypted);
+//print_r($encrypted);die;
         //check duplicate username
         $reference = $this->database->getReference('mst_account')->getValue();
         $errorDuplicate = false;
@@ -75,7 +80,7 @@ class AccountController extends BaseController
         }
         $data = array(
             'acc_username' => $request->acc_username,
-            'acc_password' => $request->acc_password,
+            'acc_password' => Crypt::encryptString($request->acc_password),
             'acc_email' => $request->acc_email,
             'acc_flag' => 1,
         );

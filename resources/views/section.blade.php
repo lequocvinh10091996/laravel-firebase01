@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
-@section('title', 'Config type')
-@section('title-current', 'List config type')
+@section('title', 'Section')
+@section('title-current', 'List section')
 @section('content')
         <style>
             .pagination {
@@ -50,9 +50,9 @@
             }
         </style>
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
-          <h5>List config type</h5>
+          <h5>List section</h5>
           <div style="float: right;margin: 8px; margin-right: 16px;">
-            <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertConfigType()">Insert</button>
+            <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertSection()">Insert</button>
           </div>
         </div>
 
@@ -62,19 +62,21 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Config Name</th>
-                        <th>Config Descrip</th>
+                        <th>Section vietnamese</th>
+                        <th>Section Japanese</th>
+                        <th>Section Descrip</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="configType in listConfigType|itemsPerPage: pageSize" current-page="currentPage">
+                    <tr  dir-paginate="section in listSection|itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
-                        <td style="width: 15%;"><% configType.cty_config_name %></td>
-                        <td><% configType.cty_config_descrip %></td>
+                        <td style="width: 15%;"><% section.sec_vietnamese %></td>
+                        <td style="width: 15%;"><% section.sec_japanese %></td>
+                        <td><% section.sec_description  %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <button class="badge badge-info" ng-click="updateConfigType(pageSize *(currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteConfigType(pageSize *(currentPage - 1) + $index)">Delete</button>
+                            <button class="badge badge-info" ng-click="updateSection(pageSize *(currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
+                            <button class="badge badge-important" ng-click="deleteSection(pageSize *(currentPage - 1) + $index)">Delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -83,71 +85,82 @@
         <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" >
         </dir-pagination-controls>
       <script >
-        appName.controller('ConfigTypeController', function($scope, $http, MainUrl) {
-          $scope.listConfigType = [];
+        appName.controller('SectionController', function($scope, $http, MainUrl) {
+          $scope.listSection = [];
           $scope.currentPage = 1;
           $scope.pageSize = 5;
-          $scope.configType = {};
+          $scope.section = {};
           let map = new Map();
           
-            $http.get(MainUrl+'/configtype').then(function(response){
-              data = response.data.data.listConfigType;
+            $http.get(MainUrl+'/section').then(function(response){
+              data = response.data.data.listSection;
               if(data){
                   var index = 0;
                   $.each(data, function( key, value ) {
-                    $scope.listConfigType.push(value);
+                    $scope.listSection.push(value);
                     map.set(index, key);
                     index++;
                   });
               }
             });
-            console.log($scope.listConfigType);
-            //insertConfigType
-            $scope.insertConfigType = function(){
-              $('.modal-title').html('Insert Config Type');
-              $scope.configType = {};
+            //insertSection
+            $scope.insertSection = function(){
+              $('.modal-title').html('Insert section');
+              $scope.section = {};
               $('.control-group').removeClass('error');
-              $('#mgs_cty_config_name').addClass('hidden');
+              $('#mgs_sec_vietnamese').addClass('hidden');
+              $('#mgs_sec_japanese').addClass('hidden');
               $('#myModal').modal('show');
             }
-            //end insertConfigType
+            //end insertSection
 
-            //updateConfigType
-            $scope.updateConfigType = function(index){
-                $('.modal-title').html('Update Config Type');
-                $scope.configType = {};
-                $scope.configType = angular.copy($scope.listConfigType[index]);
-                $scope.configType.index = index;
+            //updateSection
+            $scope.updateSection = function(index){
+                $('.modal-title').html('Update section');
+                $scope.section = {};
+                $scope.section = angular.copy($scope.listSection[index]);
+                $scope.section.index = index;
                 $('.control-group').removeClass('error');
-                $('#mgs_cty_config_name').addClass('hidden');
+                $('#mgs_sec_vietnamese').addClass('hidden');
+                $('#mgs_sec_japanese').addClass('hidden');
                 $('#myModal').modal('show');
             }
-            //end updateConfigType
+            //end updateSection
 
             //actionSave insert|edit
             $scope.actionSave = function(){
               $('.loader').removeClass('hidden');
               $('.control-group').removeClass('error');
-              $('#mgs_cty_config_name').addClass('hidden');
+              $('#mgs_sec_vietnamese').addClass('hidden');
+              $('#mgs_sec_japanese').addClass('hidden');
               $('.mgs_modal').addClass('hidden');
               var flag_ok = true;
-              var Url = MainUrl+'/configtype';
-              if(map.get($scope.configType.index)){
+              var Url = MainUrl+'/section';
+              if(map.get($scope.section.index)){
                 Url += '/update';
-                $scope.configType.keyConfigType = map.get($scope.configType.index);
+                $scope.section.keySection = map.get($scope.section.index);
               }
-              if(angular.isUndefined($scope.configType.cty_config_name)){
-                $('#cty_config_name').parents('.control-group').addClass('error');
-                $('#mgs_cty_config_name').removeClass('hidden');
-                flag_ok= false;
+              if(angular.isUndefined($scope.section.sec_vietnamese) &&
+                  angular.isUndefined($scope.section.sec_japanese)) {
+                    $('.control-group').addClass('error');
+                    $('#mgs_sec_vietnamese').removeClass('hidden');
+                    $('#mgs_sec_japanese').removeClass('hidden');
+                    flag_ok= false;
+              }else if(angular.isUndefined($scope.section.sec_vietnamese)){
+                    $('#sec_vietnamese').parents('.control-group').addClass('error');
+                    $('#mgs_sec_vietnamese').removeClass('hidden');
+                    flag_ok= false;
+              } else if(angular.isUndefined($scope.section.sec_japanese)){
+                    $('#sec_japanese').parents('.control-group').addClass('error');
+                    $('#mgs_sec_japanese').removeClass('hidden');
+                    flag_ok= false;
               }
-              
               if(flag_ok == false){
                   $('.loader').addClass('hidden');
               }
               
               if(flag_ok == true){
-                var reData = $.param($scope.configType);
+                var reData = $.param($scope.section);
                 $http.post(Url, reData,
                 {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
                 ).then(function (response){
@@ -158,15 +171,15 @@
                   } else if(response.data.error == false) {
                     $('#myModal').modal('hide');
                     rowNew = $.parseJSON(response.data.data);
-                    if(map.get($scope.configType.index)){
-                      $scope.listConfigType[$scope.configType.index] = rowNew;
+                    if(map.get($scope.section.index)){
+                      $scope.listSection[$scope.section.index] = rowNew;
                       alertify.set('notifier', 'position', 'top-center');
                       alertify.success('Update row complete.');
                     } else{
                       alertify.set('notifier', 'position', 'top-center');
                       alertify.success('Insert row complete.');
-                      $scope.listConfigType.push(rowNew);
-                      map.set($scope.listConfigType.length-1, response.data.key);
+                      $scope.listSection.push(rowNew);
+                      map.set($scope.listSection.length-1, response.data.key);
                     }
                   }
                 });
@@ -174,19 +187,19 @@
             }
             //end actionSave
                    
-            //deleteConfigType
-            $scope.deleteConfigType = function(index){
-                alertify.confirm('Confirm delete', 'Do you want to delete ['+$scope.listConfigType[index].cty_config_name+'] ?', function(){ 
-                    var Url = MainUrl+'/configtype/delete';
-                    $scope.configType.keyConfigType = map.get(index);
-                    var reData = $.param($scope.configType);
+            //deleteSection
+            $scope.deleteSection = function(index){
+                alertify.confirm('Confirm delete', 'Do you want to delete ['+$scope.listSection[index].sec_vietnamese+'] ?', function(){ 
+                    var Url = MainUrl+'/section/delete';
+                    $scope.section.keySection = map.get(index);
+                    var reData = $.param($scope.section);
                     $http.post(Url, reData,
                     {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
                     ).then(function (response){
                        if(response.data.error == false){
                           alertify.set('notifier', 'position', 'top-center');
-                          alertify.success('Delete ['+$scope.listConfigType[index].cty_config_name+'] complete.').dismissOthers();
-                          $scope.listConfigType.splice(index, 1);
+                          alertify.success('Delete ['+$scope.listSection[index].sec_vietnamese+'] complete.').dismissOthers();
+                          $scope.listSection.splice(index, 1);
                         }else if(response.data.error == true){
                             alertify.set('notifier', 'position', 'top-center');
                             alertify.error(response.data.data).dismissOthers();
@@ -219,24 +232,35 @@
             <div class="mgs_modal alert alert-error hidden">
               <strong id="mgs_modal" ></strong>
             </div>
-          <form name="frmInsertConfigType" action="#" class="form-horizontal" novalidate="novalidate">
+          <form name="frmInsertSection" action="#" class="form-horizontal" novalidate="novalidate">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="control-group">
-                <label class="control-label">Config name <i class="icon icon-asterisk" style="color: red;"></i>:</label>
+                <label class="control-label">Section vietnamese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
               <div class="controls">
-                <input type="t" class="span6" id="cty_config_name" name="cty_config_name" placeholder="Config name"
-                ng-model="configType.cty_config_name"
+                <input type="t" class="span6" id="sec_vietnamese" name="sec_vietnamese" placeholder="Section vietnamese "
+                ng-model="section.sec_vietnamese"
                 ng-required="true" />
-                <span for="cty_config_name" generated="true" id="mgs_cty_config_name"
+                <span for="sec_vietnamese" generated="true" id="mgs_sec_vietnamese"
                 class="help-inline hidden"
-                >Config name is required and can't be empty</span>
+                >Section vietnamese  is required and can't be empty</span>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label">Config descrip :</label>
+                <label class="control-label">Section japanese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
               <div class="controls">
-                <textarea rows="4" cols="50" class="span6" id="cty_config_descrip" name="cty_config_descrip" placeholder="Config descrip"
-                ng-model="configType.cty_config_descrip" ng-required="false" >
+                <input type="t" class="span6" id="sec_japanese" name="sec_japanese" placeholder="Section japanese "
+                ng-model="section.sec_japanese"
+                ng-required="true" />
+                <span for="sec_japanese" generated="true" id="mgs_sec_japanese"
+                class="help-inline hidden"
+                >Section japanese  is required and can't be empty</span>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Section description :</label>
+              <div class="controls">
+                <textarea rows="4" cols="50" class="span6" id="sec_description " name="sec_description " placeholder="Section description"
+                ng-model="section.sec_description" ng-required="false" >
                 </textarea>
               </div>
             </div>

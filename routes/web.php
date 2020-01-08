@@ -25,13 +25,13 @@ Route::get('/account/index', function () {
     return view('account', ['controllername' => 'AccountController']);
 });
 
-Route::get('/configtype', 'ConfigTypeController@index');
-Route::post('/configtype', 'ConfigTypeController@store');
-Route::post('/configtype/update', 'ConfigTypeController@update');
-Route::post('/configtype/delete', 'ConfigTypeController@delete');
+Route::get('/section', 'SectionController@index');
+Route::post('/section', 'SectionController@store');
+Route::post('/section/update', 'SectionController@update');
+Route::post('/section/delete', 'SectionController@delete');
 
-Route::get('/configtype/index', function () {
-    return view('configtype', ['controllername' => 'ConfigTypeController']);
+Route::get('/section/index', function () {
+    return view('section', ['controllername' => 'SectionController']);
 });
 
 Route::get('/translatemean', 'TranslateMeanController@index');

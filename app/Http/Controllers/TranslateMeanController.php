@@ -31,7 +31,7 @@ class TranslateMeanController extends BaseController
         $key = null;
         $data = array(
             'cty_id' => $request->cty_id,
-            'tm_english_translate' => $request->tm_english_translate,
+            'tm_english_translate' => "$request->tm_english_translate",
             'tm_japanese_translate' => $request->tm_japanese_translate,
             'tm_japanese_higarana' => $request->tm_japanese_higarana,
             'tm_vietnamese_translate' => $request->tm_vietnamese_translate,
@@ -92,7 +92,7 @@ class TranslateMeanController extends BaseController
         }
         $data = array(
             'cty_id' => $request->cty_id,
-            'tm_english_translate' => $request->tm_english_translate,
+            'tm_english_translate' => isset($request->tm_english_translate) && $request->tm_english_translate != "undefined" ? $request->tm_english_translate : "",
             'tm_japanese_translate' => $request->tm_japanese_translate,
             'tm_japanese_higarana' => $request->tm_japanese_higarana,
             'tm_vietnamese_translate' => $request->tm_vietnamese_translate,

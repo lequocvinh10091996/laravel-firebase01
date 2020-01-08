@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use Illuminate\Support\Facades\Crypt;
 
 class LoginController extends BaseController {
 
@@ -25,7 +26,7 @@ class LoginController extends BaseController {
         $successlogin = false;
         foreach($reference as $key => $value){
             if(is_array($value)) {
-                if ($user_data['acc_email'] == $value['acc_email'] && $user_data['acc_password'] == $value['acc_password']) {
+                if ($user_data['acc_email'] == $value['acc_email'] && $user_data['acc_password'] == Crypt::decryptString($value['acc_password'])) {
                     session(['acc_username' =>  $value['acc_username']]);
                     $successlogin = true;
                 }

@@ -144,7 +144,6 @@
             $scope.actionSave = function(){
               $('.control-group').removeClass('error');
               $('#mgs_cty_id').addClass('hidden');
-              $('#mgs_tm_english_translate').addClass('hidden');
               $('#mgs_tm_japanese_translate').addClass('hidden');
               $('#mgs_tm_japanese_higarana').addClass('hidden');
               $('#mgs_tm_vietnamese_translate').addClass('hidden');
@@ -157,24 +156,21 @@
                 $scope.translateMean.keyTranslateMean = map.get($scope.translateMean.index);
               }
               if((angular.isUndefined($scope.translateMean.cty_id) &&
-                  angular.isUndefined($scope.translateMean.tm_english_translate) &&
                   angular.isUndefined($scope.translateMean.tm_japanese_translate) &&
                   angular.isUndefined($scope.translateMean.tm_japanese_higarana) &&
                   angular.isUndefined($scope.translateMean.tm_vietnamese_translate))) {
                     $('.control-group').addClass('error');
+                    $('.select2-choice').css('border-color','#b94a48');
+                    $('#tm_english_translate').parents('.control-group').removeClass('error');
                     $('#mgs_cty_id').removeClass('hidden');
-                    $('#mgs_tm_english_translate').removeClass('hidden');
                     $('#mgs_tm_japanese_translate').removeClass('hidden');
                     $('#mgs_tm_japanese_higarana').removeClass('hidden');
                     $('#mgs_tm_vietnamese_translate').removeClass('hidden');
                     flag_ok= false;
               } else if(angular.isUndefined($scope.translateMean.cty_id)){
                 $('#cty_id').parents('.control-group').addClass('error');
+                $('.select2-choice').css('border-color','#b94a48');
                 $('#mgs_cty_id').removeClass('hidden');
-                flag_ok= false;
-              } else if(angular.isUndefined($scope.translateMean.tm_english_translate)){
-                $('#tm_english_translate').parents('.control-group').addClass('error');
-                $('#mgs_tm_english_translate').removeClass('hidden');
                 flag_ok= false;
               } else if(angular.isUndefined($scope.translateMean.tm_japanese_translate)){
                 $('#tm_japanese_translate').parents('.control-group').addClass('error');
@@ -297,20 +293,16 @@
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label">English translate <i class="icon icon-asterisk" style="color: red;"></i>:</label>
+              <label class="control-label">English translate :</label>
               <div class="controls">
                 <input type="text" class="span6" id="tm_english_translate" name="tm_english_translate" placeholder="English translate"
-                ng-model="translateMean.tm_english_translate"
-                ng-required="true" />
-                <span for="tm_english_translate" generated="true" id="mgs_tm_english_translate"
-                class="help-inline hidden"
-                >English translate is required and can't be empty</span>
+                ng-model="translateMean.tm_english_translate" ng-required="true"/>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label">Japanese translate <i class="icon icon-asterisk" style="color: red;"></i>:</label>
+              <label class="control-label">Japanese kanzi <i class="icon icon-asterisk" style="color: red;"></i>:</label>
               <div class="controls">
-                <input type="text" class="span6" id="tm_japanese_translate" name="tm_japanese_translate" placeholder="Japanese translate"
+                <input type="text" class="span6" id="tm_japanese_translate" name="tm_japanese_translate" placeholder="Japanese kanzi"
                 ng-model="translateMean.tm_japanese_translate"
                 ng-required="true" />
                 <span for="tm_japanese_translate" generated="true" id="mgs_tm_japanese_translate"

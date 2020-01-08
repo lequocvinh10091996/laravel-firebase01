@@ -63,7 +63,6 @@
                     <tr>
                         <th></th>
                         <th>Username</th>
-                        <th>Password</th>
                         <th>Email</th>
                         <th>Action</th>
                     </tr>
@@ -72,7 +71,6 @@
                     <tr  dir-paginate="account in listAccount|itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize * (currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% account.acc_username %></td>
-                        <td><% account.acc_password %></td>
                         <td><% account.acc_email %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
                             <button class="badge badge-info" ng-click="updateAccount(pageSize * (currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
@@ -97,9 +95,11 @@
               if(data){
                   var index = 0;
                   $.each(data, function( key, value ) {
-                    $scope.listAccount.push(value);
-                    map.set(index, key);
-                    index++;
+                      if(key != 'admin01'){
+                          $scope.listAccount.push(value);
+                          map.set(index, key);
+                          index++;
+                      }
                   });
               }
             });
