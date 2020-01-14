@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
-@section('title', 'Account')
-@section('title-current', 'List account')
+@section('title', 'Topic')
+@section('title-current', 'List topic')
 @section('content')
         <style>
             .pagination {
@@ -50,9 +50,9 @@
             }
         </style>
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
-          <h5>List account</h5>
+          <h5>List topic</h5>
           <div style="float: right;margin: 8px; margin-right: 16px;">
-            <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertAccount()">Insert</button>
+            <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTopic()">Insert</button>
           </div>
         </div>
 
@@ -62,19 +62,21 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Username</th>
-                        <th>Email</th>
+                        <th>Topic vietnamese</th>
+                        <th>Topic Japanese</th>
+                        <th>Topic Descrip</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="account in listAccount|itemsPerPage: pageSize" current-page="currentPage">
-                        <td class="center" style="text-align: center; width: 5%;"><% pageSize * (currentPage - 1) + $index + 1 %></td>
-                        <td style="width: 15%;"><% account.acc_username %></td>
-                        <td><% account.acc_email %></td>
+                    <tr  dir-paginate="topic in listTopic|itemsPerPage: pageSize" current-page="currentPage">
+                        <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
+                        <td style="width: 15%;"><% topic.sec_vietnamese %></td>
+                        <td style="width: 15%;"><% topic.sec_japanese %></td>
+                        <td><% topic.sec_description  %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <button class="badge badge-info" ng-click="updateAccount(pageSize * (currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteAccount(pageSize * (currentPage - 1) + $index)">Delete</button>
+                            <button class="badge badge-info" ng-click="updateTopic(pageSize *(currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
+                            <button class="badge badge-important" ng-click="deleteTopic(pageSize *(currentPage - 1) + $index)">Delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -83,96 +85,84 @@
         <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" >
         </dir-pagination-controls>
       <script >
-        appName.controller('AccountController', function($scope, $http, MainUrl) {
-          $scope.listAccount = [];
+        appName.controller('TopicController', function($scope, $http, MainUrl) {
+          $scope.listTopic = [];
           $scope.currentPage = 1;
           $scope.pageSize = 5;
-          $scope.account = {};
+          $scope.topic = {};
           let map = new Map();
           
-            $http.get(MainUrl+'/account').then(function(response){
-              data = response.data.data.listAccount;
+            $http.get(MainUrl+'/topic').then(function(response){
+              data = response.data.data.listTopic;
               if(data){
                   var index = 0;
                   $.each(data, function( key, value ) {
-                      if(key != 'admin01'){
-                          $scope.listAccount.push(value);
-                          map.set(index, key);
-                          index++;
-                      }
+                    $scope.listTopic.push(value);
+                    map.set(index, key);
+                    index++;
                   });
               }
             });
-            //insertAccount
-            $scope.insertAccount = function(){
-              $('.modal-title').html('Insert account');
-              $('.mgs_modal').addClass('hidden');
-              $scope.account = {};
+            //insertTopic
+            $scope.insertTopic = function(){
+              $('.modal-title').html('Insert topic');
+              $scope.topic = {};
               $('.control-group').removeClass('error');
-              $('#mgs_username').addClass('hidden');
-              $('#mgs_password').addClass('hidden');
-              $('#mgs_email').addClass('hidden');
+              $('#mgs_sec_vietnamese').addClass('hidden');
+              $('#mgs_sec_japanese').addClass('hidden');
+              $('.mgs_modal').addClass('hidden');
               $('#myModal').modal('show');
             }
-            //end insertAccount
+            //end insertTopic
 
-            //updateAccount
-            $scope.updateAccount = function(index){
-                $('.modal-title').html('Update account');
+            //updateTopic
+            $scope.updateTopic = function(index){
+                $('.modal-title').html('Update topic');
                 $('.mgs_modal').addClass('hidden');
-                $scope.account = {};
-                $scope.account = angular.copy($scope.listAccount[index]);
-                $scope.account.index = index;
+                $scope.topic = {};
+                $scope.topic = angular.copy($scope.listTopic[index]);
+                $scope.topic.index = index;
                 $('.control-group').removeClass('error');
-                $('#mgs_username').addClass('hidden');
-                $('#mgs_password').addClass('hidden');
-                $('#mgs_email').addClass('hidden');
+                $('#mgs_sec_vietnamese').addClass('hidden');
+                $('#mgs_sec_japanese').addClass('hidden');
                 $('#myModal').modal('show');
             }
-            //end updateAccount
+            //end updateTopic
 
             //actionSave insert|edit
             $scope.actionSave = function(){
               $('.loader').removeClass('hidden');
               $('.control-group').removeClass('error');
-              $('#mgs_username').addClass('hidden');
-              $('#mgs_password').addClass('hidden');
-              $('#mgs_email').addClass('hidden');
+              $('#mgs_sec_vietnamese').addClass('hidden');
+              $('#mgs_sec_japanese').addClass('hidden');
               $('.mgs_modal').addClass('hidden');
               var flag_ok = true;
-              var Url = MainUrl+'/account';
-              if(map.get($scope.account.index)){
+              var Url = MainUrl+'/topic';
+              if(map.get($scope.topic.index)){
                 Url += '/update';
-                $scope.account.keyAccount = map.get($scope.account.index);
+                $scope.topic.keyTopic = map.get($scope.topic.index);
               }
-              if((angular.isUndefined($scope.account.acc_username) &&
-                  angular.isUndefined($scope.account.acc_password) &&
-                  angular.isUndefined($scope.account.acc_email))) {
+              if(angular.isUndefined($scope.topic.sec_vietnamese) &&
+                  angular.isUndefined($scope.topic.sec_japanese)) {
                     $('.control-group').addClass('error');
-                    $('#mgs_username').removeClass('hidden');
-                    $('#mgs_password').removeClass('hidden');
-                    $('#mgs_email').removeClass('hidden');
+                    $('#mgs_sec_vietnamese').removeClass('hidden');
+                    $('#mgs_sec_japanese').removeClass('hidden');
                     flag_ok= false;
-              } else if(angular.isUndefined($scope.account.acc_username)){
-                $('#username').parents('.control-group').addClass('error');
-                $('#mgs_username').removeClass('hidden');
-                flag_ok= false;
-              } else if(angular.isUndefined($scope.account.acc_password)){
-                $('#password').parents('.control-group').addClass('error');
-                $('#mgs_password').removeClass('hidden');
-                flag_ok= false;
-              } else if(angular.isUndefined($scope.account.acc_email)){
-                $('#email').parents('.control-group').addClass('error');
-                $('#mgs_email').removeClass('hidden');
-                flag_ok= false;
+              }else if(angular.isUndefined($scope.topic.sec_vietnamese)){
+                    $('#sec_vietnamese').parents('.control-group').addClass('error');
+                    $('#mgs_sec_vietnamese').removeClass('hidden');
+                    flag_ok= false;
+              } else if(angular.isUndefined($scope.topic.sec_japanese)){
+                    $('#sec_japanese').parents('.control-group').addClass('error');
+                    $('#mgs_sec_japanese').removeClass('hidden');
+                    flag_ok= false;
               }
-              
               if(flag_ok == false){
                   $('.loader').addClass('hidden');
               }
               
               if(flag_ok == true){
-                var reData = $.param($scope.account);
+                var reData = $.param($scope.topic);
                 $http.post(Url, reData,
                 {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
                 ).then(function (response){
@@ -183,15 +173,15 @@
                   } else if(response.data.error == false) {
                     $('#myModal').modal('hide');
                     rowNew = $.parseJSON(response.data.data);
-                    if(map.get($scope.account.index)){
-                      $scope.listAccount[$scope.account.index] = rowNew;
+                    if(map.get($scope.topic.index)){
+                      $scope.listTopic[$scope.topic.index] = rowNew;
                       alertify.set('notifier', 'position', 'top-center');
                       alertify.success('Update row complete.');
                     } else{
                       alertify.set('notifier', 'position', 'top-center');
                       alertify.success('Insert row complete.');
-                      $scope.listAccount.push(rowNew);
-                      map.set($scope.listAccount.length-1, response.data.key);
+                      $scope.listTopic.push(rowNew);
+                      map.set($scope.listTopic.length-1, response.data.key);
                     }
                   }
                 });
@@ -199,20 +189,20 @@
             }
             //end actionSave
                    
-            //actionDelete
-            $scope.deleteAccount = function(index){
-                alertify.confirm('Confirm delete', 'Do you want to delete ['+$scope.listAccount[index].acc_username+'] ?', function(){ 
-                    var Url = MainUrl+'/account/delete';
-                    $scope.account.keyAccount = map.get(index);
-                    var reData = $.param($scope.account);
+            //deleteTopic
+            $scope.deleteTopic = function(index){
+                alertify.confirm('Confirm delete', 'Do you want to delete ['+$scope.listTopic[index].sec_vietnamese+'] ?', function(){ 
+                    var Url = MainUrl+'/topic/delete';
+                    $scope.topic.keyTopic = map.get(index);
+                    var reData = $.param($scope.topic);
                     $http.post(Url, reData,
                     {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
                     ).then(function (response){
                        if(response.data.error == false){
                           alertify.set('notifier', 'position', 'top-center');
-                          alertify.success('Delete ['+$scope.listAccount[index].acc_username+'] complete.').dismissOthers();
-                          $scope.listAccount.splice(index, 1);
-                           //delete map key
+                          alertify.success('Delete ['+$scope.listTopic[index].sec_vietnamese+'] complete.').dismissOthers();
+                          $scope.listTopic.splice(index, 1);
+                          //delete map key
                           map.delete(index);
                           //clear map and set map
                           $scope.listMapCurent = [];
@@ -225,7 +215,7 @@
                               map.set(key, value);
                             });  
                           }
-                        }else if(response.data.error == true){
+                        } else if(response.data.error == true){
                             alertify.set('notifier', 'position', 'top-center');
                             alertify.error(response.data.data).dismissOthers();
                         }
@@ -240,7 +230,7 @@
 
 @section('modal-content')
 <!-- Modal -->
-<div class="modal fade" id="myModal" role="dialog" style="display: none;">
+  <div class="modal fade" id="myModal" role="dialog" style="display: none;">
     <div class="modal-dialog">
     
       <!-- Modal content-->
@@ -257,40 +247,35 @@
             <div class="mgs_modal alert alert-error hidden">
               <strong id="mgs_modal" ></strong>
             </div>
-          <form name="frmInsertAccount" action="#" class="form-horizontal" novalidate="novalidate">
+          <form name="frmInsertTopic" action="#" class="form-horizontal" novalidate="novalidate">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="control-group">
-                <label class="control-label">Username <i class="icon icon-asterisk" style="color: red;"></i>:</label>
+                <label class="control-label">Topic vietnamese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
               <div class="controls">
-                <input type="text" class="span6" id="username" name="username" placeholder="Username"
-                ng-model="account.acc_username"
+                <input type="t" class="span6" id="sec_vietnamese" name="sec_vietnamese" placeholder="Topic vietnamese "
+                ng-model="topic.sec_vietnamese"
                 ng-required="true" />
-                <span for="username" generated="true" id="mgs_username"
+                <span for="sec_vietnamese" generated="true" id="mgs_sec_vietnamese"
                 class="help-inline hidden"
-                >Username is required and can't be empty</span>
+                >Topic vietnamese  is required and can't be empty</span>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label">Password <i class="icon icon-asterisk" style="color: red;"></i>:</label>
+                <label class="control-label">Topic japanese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
               <div class="controls">
-                  <input type="password" class="span6" id="password" name="password" placeholder="Password"
-                ng-model="account.acc_password"
+                <input type="t" class="span6" id="sec_japanese" name="sec_japanese" placeholder="Topic japanese "
+                ng-model="topic.sec_japanese"
                 ng-required="true" />
-                <span for="password" generated="true" id="mgs_password"
+                <span for="sec_japanese" generated="true" id="mgs_sec_japanese"
                 class="help-inline hidden"
-                >Password is required and can't be empty</span>
+                >Topic japanese  is required and can't be empty</span>
               </div>
             </div>
-            <div class="control-group">
-              <label class="control-label">Email <i class="icon icon-asterisk" style="color: red;"></i>:</label>
-              <div class="controls">
-                  <input type="email" class="span6" id="email" name="email" placeholder="Email"
-                ng-model="account.acc_email"
-                ng-required="true" />
-                <span for="email" generated="true" id="mgs_email"
-                class="help-inline hidden"
-                >Email is required and can't be empty</span>
-              </div>
+            <label class="control-label">Topic description :</label>
+            <div class="controls">
+                <textarea rows="4" cols="50" class="span6" id="sec_description " name="sec_description " placeholder="Topic description"
+                          ng-model="topic.sec_description" ng-required="false" >
+                </textarea>
             </div>
           </form>
         </div>

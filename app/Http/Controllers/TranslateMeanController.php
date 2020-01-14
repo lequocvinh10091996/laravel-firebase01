@@ -10,14 +10,15 @@ class TranslateMeanController extends BaseController
     public function index() {
         $json = array();
         $listTranslateMean = $this->database->getReference('mst_translate_mean')->getValue();
-        $listConfigType = $this->database->getReference('mst_config_type')->getValue();
-        foreach ($listTranslateMean as $key => $value){
-            if(isset($listConfigType[$value['cty_id']])){
-                $listTranslateMean[$key]['cty_config_name'] = $listConfigType[$value['cty_id']]['cty_config_name'];
+        $listConfigType = $this->database->getReference('mst_section')->getValue();
+        
+        if ($listTranslateMean) {
+            foreach ($listTranslateMean as $key => $value) {
+                if (isset($listConfigType[$value['sec_id']])) {
+                    $listTranslateMean[$key]['sec_vietnamese'] = $listConfigType[$value['sec_id']]['sec_vietnamese'];
+                }
             }
-        }
-        if($listTranslateMean){
-          $json = json_encode($listTranslateMean);   
+            $json = json_encode($listTranslateMean);   
         } 
         return response([
             'error' => false,
@@ -30,7 +31,7 @@ class TranslateMeanController extends BaseController
         $json = null;
         $key = null;
         $data = array(
-            'cty_id' => $request->cty_id,
+            'sec_id' => $request->sec_id,
             'tm_english_translate' => "$request->tm_english_translate",
             'tm_japanese_translate' => $request->tm_japanese_translate,
             'tm_japanese_higarana' => $request->tm_japanese_higarana,
@@ -43,7 +44,7 @@ class TranslateMeanController extends BaseController
         if ($reference) {
             foreach ($reference as $key => $value) {
                 if (is_array($value)) {
-                    if (($data['cty_id'] == $value['cty_id']) && ($data['tm_english_translate'] == $value['tm_english_translate'] || 
+                    if (($data['sec_id'] == $value['sec_id']) && ($data['tm_english_translate'] == $value['tm_english_translate'] || 
                         $data['tm_japanese_translate'] == $value['tm_japanese_translate'] ||
                         $data['tm_japanese_higarana'] == $value['tm_japanese_higarana'] ||
                         $data['tm_vietnamese_translate'] == $value['tm_vietnamese_translate'])) {
@@ -64,9 +65,9 @@ class TranslateMeanController extends BaseController
         if ($translateMeanId) {
             $currentTranslateMean = $this->database->getReference('mst_translate_mean/' . $translateMeanId)->getValue();
             //get name of id in config type
-            $listConfigType = $this->database->getReference('mst_config_type')->getValue();
-            if (isset($listConfigType[$data['cty_id']])) {
-                $currentTranslateMean['cty_config_name'] = $listConfigType[$data['cty_id']]['cty_config_name'];
+            $listConfigType = $this->database->getReference('mst_section')->getValue();
+            if (isset($listConfigType[$data['sec_id']])) {
+                $currentTranslateMean['sec_vietnamese'] = $listConfigType[$data['sec_id']]['sec_vietnamese'];
             }
             
             $error = false;
@@ -91,7 +92,7 @@ class TranslateMeanController extends BaseController
             ], 200);
         }
         $data = array(
-            'cty_id' => $request->cty_id,
+            'sec_id' => $request->sec_id,
             'tm_english_translate' => isset($request->tm_english_translate) && $request->tm_english_translate != "undefined" ? $request->tm_english_translate : "",
             'tm_japanese_translate' => $request->tm_japanese_translate,
             'tm_japanese_higarana' => $request->tm_japanese_higarana,
@@ -104,7 +105,7 @@ class TranslateMeanController extends BaseController
         $keyExist = false;
         foreach ($reference as $key => $value) {
             if (is_array($value) && $keyTranslateMean != $key) {
-                if (($data['cty_id'] == $value['cty_id']) && ($data['tm_english_translate'] == $value['tm_english_translate'] || 
+                if (($data['sec_id'] == $value['sec_id']) && ($data['tm_english_translate'] == $value['tm_english_translate'] || 
                         $data['tm_japanese_translate'] == $value['tm_japanese_translate'] ||
                         $data['tm_japanese_higarana'] == $value['tm_japanese_higarana'] ||
                         $data['tm_vietnamese_translate'] == $value['tm_vietnamese_translate'])) {
@@ -128,9 +129,9 @@ class TranslateMeanController extends BaseController
             //get data
             $currentTranslateMean = $this->database->getReference('mst_translate_mean/' . $keyTranslateMean)->getValue();
             //get name of id in config type
-            $listConfigType = $this->database->getReference('mst_config_type')->getValue();
-            if (isset($listConfigType[$data['cty_id']])) {
-                $currentTranslateMean['cty_config_name'] = $listConfigType[$data['cty_id']]['cty_config_name'];
+            $listConfigType = $this->database->getReference('mst_section')->getValue();
+            if (isset($listConfigType[$data['sec_id']])) {
+                $currentTranslateMean['sec_vietnamese'] = $listConfigType[$data['sec_id']]['sec_vietnamese'];
             }
             
             $error = false;

@@ -27,7 +27,7 @@ class SectionController extends BaseController
             'sec_vietnamese' => $request->sec_vietnamese,
             'sec_japanese' => $request->sec_japanese,
             'sec_description' => $request->sec_description,
-            'sec_flag ' => 1,
+            'sec_flag' => 1,
         );
         //check duplicate username
         $reference = $this->database->getReference('mst_section')->getValue();
@@ -35,7 +35,7 @@ class SectionController extends BaseController
         if ($reference) {
             foreach ($reference as $key => $value) {
                 if (is_array($value)) {
-                    if ($data['sec_vietnamese'] == $value['sec_vietnamese']) {
+                    if ($data['sec_vietnamese'] == $value['sec_vietnamese'] || $data['sec_japanese'] == $value['sec_japanese']) {
                         $errorDuplicate = true;
                     }
                 }
@@ -44,17 +44,17 @@ class SectionController extends BaseController
         if ($errorDuplicate) {
             return response([
                 'error' => true,
-                'data' => 'Config type is duplicate !'
+                'data' => 'Section is duplicate !'
                     ], 200);
         }
         //insert
-        $configTypeId = $this->database->getReference('mst_section')->push($data)->getKey();
+        $sectionId = $this->database->getReference('mst_section')->push($data)->getKey();
         //get data
-        if ($configTypeId) {
-            $currentConfigType = $this->database->getReference('mst_section/' . $configTypeId)->getValue();
+        if ($sectionId) {
+            $currentConfigType = $this->database->getReference('mst_section/' . $sectionId)->getValue();
             $error = false;
             $json = json_encode($currentConfigType);
-            $key = $configTypeId;
+            $key = $sectionId;
         }
         return response([
             'error' => $error,
@@ -85,7 +85,7 @@ class SectionController extends BaseController
         $keyExist = false;
         foreach ($reference as $key => $value) {
             if (is_array($value) && $keySection != $key) {
-                if ($data['sec_vietnamese'] == $value['sec_vietnamese']) {
+                if ($data['sec_vietnamese'] == $value['sec_vietnamese'] || $data['sec_japanese'] == $value['sec_japanese']) {
                     $errorDuplicate = true;
                 }
             }

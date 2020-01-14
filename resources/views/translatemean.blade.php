@@ -61,7 +61,7 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Config Type</th>
+                        <th>Section</th>
                         <th>English Translate</th>
                         <th>Japanese Translate</th>
                         <th>Japanese Higarana</th>
@@ -72,7 +72,7 @@
                 <tbody>
                     <tr  dir-paginate="translateMean in listTranslateMean|itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
-                        <td style="width: 15%;"><% translateMean.cty_config_name %></td>
+                        <td style="width: 15%;"><% translateMean.sec_vietnamese %></td>
                         <td><% translateMean.tm_english_translate %></td>
                         <td><% translateMean.tm_japanese_translate %></td>
                         <td><% translateMean.tm_japanese_higarana %></td>
@@ -109,11 +109,12 @@
             //insertTranslateMean
             $scope.insertTranslateMean = function(){
               $('.modal-title').html('Insert Translate mean');
-              $("#cty_id").select2("val", "");
+              $('.mgs_modal').addClass('hidden');
+              $("#sec_id").select2("val", "");
               $('.form-actions').removeClass('hidden');
               $scope.translateMean = {};
               $('.control-group').removeClass('error');
-              $('#mgs_cty_id').addClass('hidden');
+              $('#mgs_sec_id').addClass('hidden');
               $('#mgs_tm_english_translate').addClass('hidden');
               $('#mgs_tm_japanese_translate').addClass('hidden');
               $('#mgs_tm_japanese_higarana ').addClass('hidden');
@@ -125,13 +126,14 @@
             //updateTranslateMean
             $scope.updateTranslateMean = function(index){
                 $('.modal-title').html('Update Translate mean');
+                $('.mgs_modal').addClass('hidden');
                 $scope.translateMean = {};
                 $scope.translateMean = angular.copy($scope.listTranslateMean[index]);
                 $scope.translateMean.index = index;
-                $("#cty_id").select2("val", $scope.listTranslateMean[index].cty_id);
+                $("#sec_id").select2("val", $scope.listTranslateMean[index].sec_id);
                 $('.control-group').removeClass('error');
                 $('.form-actions').removeClass('hidden');
-                $('#mgs_cty_id').addClass('hidden');
+                $('#mgs_sec_id').addClass('hidden');
                 $('#mgs_tm_english_translate').addClass('hidden');
                 $('#mgs_tm_japanese_translate').addClass('hidden');
                 $('#mgs_tm_japanese_higarana ').addClass('hidden');
@@ -143,7 +145,7 @@
             //actionSave insert|edit
             $scope.actionSave = function(){
               $('.control-group').removeClass('error');
-              $('#mgs_cty_id').addClass('hidden');
+              $('#mgs_sec_id').addClass('hidden');
               $('#mgs_tm_japanese_translate').addClass('hidden');
               $('#mgs_tm_japanese_higarana').addClass('hidden');
               $('#mgs_tm_vietnamese_translate').addClass('hidden');
@@ -155,22 +157,20 @@
                 Url += '/update';
                 $scope.translateMean.keyTranslateMean = map.get($scope.translateMean.index);
               }
-              if((angular.isUndefined($scope.translateMean.cty_id) &&
+              if((angular.isUndefined($scope.translateMean.sec_id) &&
                   angular.isUndefined($scope.translateMean.tm_japanese_translate) &&
                   angular.isUndefined($scope.translateMean.tm_japanese_higarana) &&
                   angular.isUndefined($scope.translateMean.tm_vietnamese_translate))) {
                     $('.control-group').addClass('error');
-                    $('.select2-choice').css('border-color','#b94a48');
                     $('#tm_english_translate').parents('.control-group').removeClass('error');
-                    $('#mgs_cty_id').removeClass('hidden');
+                    $('#mgs_sec_id').removeClass('hidden');
                     $('#mgs_tm_japanese_translate').removeClass('hidden');
                     $('#mgs_tm_japanese_higarana').removeClass('hidden');
                     $('#mgs_tm_vietnamese_translate').removeClass('hidden');
                     flag_ok= false;
-              } else if(angular.isUndefined($scope.translateMean.cty_id)){
-                $('#cty_id').parents('.control-group').addClass('error');
-                $('.select2-choice').css('border-color','#b94a48');
-                $('#mgs_cty_id').removeClass('hidden');
+              } else if(angular.isUndefined($scope.translateMean.sec_id)){
+                $('#sec_id').parents('.control-group').addClass('error');
+                $('#mgs_sec_id').removeClass('hidden');
                 flag_ok= false;
               } else if(angular.isUndefined($scope.translateMean.tm_japanese_translate)){
                 $('#tm_japanese_translate').parents('.control-group').addClass('error');
@@ -221,7 +221,7 @@
             //deleteTranslateMean
             $scope.deleteTranslateMean = function(index){
                 $('.form-actions').addClass('hidden');
-                alertify.confirm('Confirm delete', 'Do you want to delete ['+$scope.listTranslateMean[index].cty_config_name+'] ?', function(){ 
+                alertify.confirm('Confirm delete', 'Do you want to delete ['+$scope.listTranslateMean[index].sec_vietnamese+'] ?', function(){ 
                     var Url = MainUrl+'/translatemean/delete';
                     $scope.translateMean.keyTranslateMean = map.get(index);
                     var reData = $.param($scope.translateMean);
@@ -230,8 +230,21 @@
                     ).then(function (response){
                        if(response.data.error == false){
                           alertify.set('notifier', 'position', 'top-center');
-                          alertify.success('Delete ['+$scope.listTranslateMean[index].cty_config_name+'] complete.').dismissOthers();
+                          alertify.success('Delete ['+$scope.listTranslateMean[index].sec_vietnamese+'] complete.').dismissOthers();
                           $scope.listTranslateMean.splice(index, 1);
+                          //delete map key
+                          map.delete(index);
+                          //clear map and set map
+                          $scope.listMapCurent = [];
+                          map.forEach(function (item, key, mapObj) {  
+                           $scope.listMapCurent.push(item);
+                          });
+                          map.clear();
+                          if($scope.listMapCurent){
+                            $.each($scope.listMapCurent, function(key, value ) {
+                              map.set(key, value);
+                            });  
+                          }
                         }else if(response.data.error == true){
                             alertify.set('notifier', 'position', 'top-center');
                             alertify.error(response.data.data).dismissOthers();
@@ -242,12 +255,12 @@
             //end actionDelete
             
             //get list type config
-            $scope.listConfigType = [];
-            $http.get(MainUrl+'/configtype').then(function(response){
-              data = response.data.data.listConfigType;
+            $scope.listSection = [];
+            $http.get(MainUrl+'/section').then(function(response){
+              data = response.data.data.listSection;
                 if(data){
                     $.each(data, function( key, value ) {
-                      $scope.listConfigType.push({cty_id: key,
+                      $scope.listSection.push({sec_id: key,
                                                  value: value});
                     });
                 }
@@ -279,15 +292,15 @@
           <form name="frmInsertTranslateMean" action="#" class="form-horizontal" novalidate="novalidate">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="control-group">
-              <label class="control-label">Config type <i class="icon icon-asterisk" style="color: red;"></i>:</label>
+              <label class="control-label">Section <i class="icon icon-asterisk" style="color: red;"></i>:</label>
               <div class="controls">
-                <select id="cty_id" name="cty_id" placeholder="Config type" ng-model="translateMean.cty_id" ng-required="true" style="width: 52% !important;">
+                <select id="sec_id" name="sec_id" placeholder="Config type" ng-model="translateMean.sec_id" ng-required="true" style="width: 52% !important;">
                   <option   value="" > --- Please choose --- </option>
-                  <option  ng-repeat="configType in listConfigType" value="<% configType.cty_id %>" >
-                    <% configType.value.cty_config_name %>
+                  <option  ng-repeat="section in listSection" value="<% section.sec_id %>" >
+                    <% section.value.sec_vietnamese %>
                   </option>
                 </select>
-                <span for="cty_id" generated="true" id="mgs_cty_id"
+                <span for="sec_id" generated="true" id="mgs_sec_id"
                 class="help-inline hidden"
                 >Config type is required and can't be empty</span>
               </div>

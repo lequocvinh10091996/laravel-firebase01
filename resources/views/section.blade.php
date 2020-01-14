@@ -110,6 +110,7 @@
               $('.control-group').removeClass('error');
               $('#mgs_sec_vietnamese').addClass('hidden');
               $('#mgs_sec_japanese').addClass('hidden');
+              $('.mgs_modal').addClass('hidden');
               $('#myModal').modal('show');
             }
             //end insertSection
@@ -117,6 +118,7 @@
             //updateSection
             $scope.updateSection = function(index){
                 $('.modal-title').html('Update section');
+                $('.mgs_modal').addClass('hidden');
                 $scope.section = {};
                 $scope.section = angular.copy($scope.listSection[index]);
                 $scope.section.index = index;
@@ -200,7 +202,20 @@
                           alertify.set('notifier', 'position', 'top-center');
                           alertify.success('Delete ['+$scope.listSection[index].sec_vietnamese+'] complete.').dismissOthers();
                           $scope.listSection.splice(index, 1);
-                        }else if(response.data.error == true){
+                          //delete map key
+                          map.delete(index);
+                          //clear map and set map
+                          $scope.listMapCurent = [];
+                          map.forEach(function (item, key, mapObj) {  
+                           $scope.listMapCurent.push(item);
+                          });
+                          map.clear();
+                          if($scope.listMapCurent){
+                            $.each($scope.listMapCurent, function(key, value ) {
+                              map.set(key, value);
+                            });  
+                          }
+                        } else if(response.data.error == true){
                             alertify.set('notifier', 'position', 'top-center');
                             alertify.error(response.data.data).dismissOthers();
                         }
@@ -256,13 +271,11 @@
                 >Section japanese  is required and can't be empty</span>
               </div>
             </div>
-            <div class="control-group">
-              <label class="control-label">Section description :</label>
-              <div class="controls">
+            <label class="control-label">Section description :</label>
+            <div class="controls">
                 <textarea rows="4" cols="50" class="span6" id="sec_description " name="sec_description " placeholder="Section description"
-                ng-model="section.sec_description" ng-required="false" >
+                          ng-model="section.sec_description" ng-required="false" >
                 </textarea>
-              </div>
             </div>
           </form>
         </div>
