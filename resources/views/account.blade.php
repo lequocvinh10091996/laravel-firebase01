@@ -58,7 +58,7 @@
 
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered tab-content input-block-level">
                 <thead>
                     <tr>
                         <th></th>
@@ -86,7 +86,7 @@
         appName.controller('AccountController', function($scope, $http, MainUrl) {
           $scope.listAccount = [];
           $scope.currentPage = 1;
-          $scope.pageSize = 5;
+          $scope.pageSize = 10;
           $scope.account = {};
           let map = new Map();
           
@@ -201,7 +201,7 @@
                    
             //actionDelete
             $scope.deleteAccount = function(index){
-                alertify.confirm('Confirm delete', 'Do you want to delete ['+$scope.listAccount[index].acc_username+'] ?', function(){ 
+                alertify.confirm('Confirm delete', 'Do you want to delete ?', function(){ 
                     var Url = MainUrl+'/account/delete';
                     $scope.account.keyAccount = map.get(index);
                     var reData = $.param($scope.account);
@@ -210,7 +210,7 @@
                     ).then(function (response){
                        if(response.data.error == false){
                           alertify.set('notifier', 'position', 'top-center');
-                          alertify.success('Delete ['+$scope.listAccount[index].acc_username+'] complete.').dismissOthers();
+                          alertify.success('Delete row complete.').dismissOthers();
                           $scope.listAccount.splice(index, 1);
                            //delete map key
                           map.delete(index);

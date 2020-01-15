@@ -58,13 +58,13 @@
 
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered tab-content input-block-level">
                 <thead>
                     <tr>
                         <th></th>
                         <th>Section vietnamese</th>
-                        <th>Section Japanese</th>
-                        <th>Section Descrip</th>
+                        <th>Section japanese</th>
+                        <th>Section description</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -88,7 +88,7 @@
         appName.controller('SectionController', function($scope, $http, MainUrl) {
           $scope.listSection = [];
           $scope.currentPage = 1;
-          $scope.pageSize = 5;
+          $scope.pageSize = 10;
           $scope.section = {};
           let map = new Map();
           
@@ -191,7 +191,7 @@
                    
             //deleteSection
             $scope.deleteSection = function(index){
-                alertify.confirm('Confirm delete', 'Do you want to delete ['+$scope.listSection[index].sec_vietnamese+'] ?', function(){ 
+                alertify.confirm('Confirm delete', 'Do you want to delete ?', function(){ 
                     var Url = MainUrl+'/section/delete';
                     $scope.section.keySection = map.get(index);
                     var reData = $.param($scope.section);
@@ -200,7 +200,7 @@
                     ).then(function (response){
                        if(response.data.error == false){
                           alertify.set('notifier', 'position', 'top-center');
-                          alertify.success('Delete ['+$scope.listSection[index].sec_vietnamese+'] complete.').dismissOthers();
+                          alertify.success('Delete row complete.').dismissOthers();
                           $scope.listSection.splice(index, 1);
                           //delete map key
                           map.delete(index);

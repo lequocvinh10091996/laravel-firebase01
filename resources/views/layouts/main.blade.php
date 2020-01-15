@@ -78,7 +78,7 @@
   <ul class="nav">
     
       <li class=""><a title="" href="#"><i class="icon icon-user"></i> <span class="text">Welcome: <b style="color: #49CCED;">{{session('acc_username')}}</b></span></a></li>
-      <li class=""><a title="" href="#" onclick="window.location.href = window.location.protocol + '//' + partLocalhost;"><i class="icon icon-share-alt"></i> <span class="text">Logout</span></a></li>
+      <li class=""><a title="" href="#" onclick="window.location.href = window.location.protocol + '//' + partLocalhost +'/logout';"><i class="icon icon-share-alt"></i> <span class="text">Logout</span></a></li>
   </ul>
 </div>
 <!--close-top-Header-menu-->
@@ -88,11 +88,14 @@
     <li class="@if($controllername == 'AccountController' ){{'active'}}@endif">
       <a href="{{ url('/account/index') }}"><i class="icon icon-home"></i> <span>Account</span></a> 
     </li>
+    <li class="@if($controllername == 'TranslateMeanController' ){{'active'}}@endif">
+      <a href="{{ url('/translatemean/index') }}"><i class="icon icon-th"></i> <span>Terminology</span></a> 
+    </li>
     <li class="@if($controllername == 'SectionController' ){{'active'}}@endif">
       <a href="{{ url('/section/index') }}"><i class="icon icon-inbox"></i> <span>Section</span></a> 
     </li>
-    <li class="@if($controllername == 'TranslateMeanController' ){{'active'}}@endif">
-      <a href="{{ url('/translatemean/index') }}"><i class="icon icon-th"></i> <span>Translate mean</span></a> 
+    <li class="@if($controllername == 'TopicController' ){{'active'}}@endif">
+      <a href="{{ url('/topic/index') }}"><i class="icon icon-book"></i> <span>Topic</span></a>
     </li>
   </ul>
 </div>

@@ -44,8 +44,7 @@ class TranslateMeanController extends BaseController
         if ($reference) {
             foreach ($reference as $key => $value) {
                 if (is_array($value)) {
-                    if (($data['sec_id'] == $value['sec_id']) && ($data['tm_english_translate'] == $value['tm_english_translate'] || 
-                        $data['tm_japanese_translate'] == $value['tm_japanese_translate'] ||
+                    if (($data['sec_id'] == $value['sec_id']) && ($data['tm_japanese_translate'] == $value['tm_japanese_translate'] ||
                         $data['tm_japanese_higarana'] == $value['tm_japanese_higarana'] ||
                         $data['tm_vietnamese_translate'] == $value['tm_vietnamese_translate'])) {
                         $errorDuplicate = true;
@@ -105,8 +104,7 @@ class TranslateMeanController extends BaseController
         $keyExist = false;
         foreach ($reference as $key => $value) {
             if (is_array($value) && $keyTranslateMean != $key) {
-                if (($data['sec_id'] == $value['sec_id']) && ($data['tm_english_translate'] == $value['tm_english_translate'] || 
-                        $data['tm_japanese_translate'] == $value['tm_japanese_translate'] ||
+                if (($data['sec_id'] == $value['sec_id']) && ($data['tm_japanese_translate'] == $value['tm_japanese_translate'] ||
                         $data['tm_japanese_higarana'] == $value['tm_japanese_higarana'] ||
                         $data['tm_vietnamese_translate'] == $value['tm_vietnamese_translate'])) {
                         $errorDuplicate = true;

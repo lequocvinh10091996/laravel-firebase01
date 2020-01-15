@@ -58,22 +58,22 @@
 
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered tab-content input-block-level">
                 <thead>
                     <tr>
                         <th></th>
                         <th>Topic vietnamese</th>
-                        <th>Topic Japanese</th>
-                        <th>Topic Descrip</th>
+                        <th>Topic japanese</th>
+                        <th>Topic description</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr  dir-paginate="topic in listTopic|itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
-                        <td style="width: 15%;"><% topic.sec_vietnamese %></td>
-                        <td style="width: 15%;"><% topic.sec_japanese %></td>
-                        <td><% topic.sec_description  %></td>
+                        <td style="width: 15%;"><% topic.top_vietnamese %></td>
+                        <td style="width: 15%;"><% topic.top_japanese %></td>
+                        <td><% topic.top_description  %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
                             <button class="badge badge-info" ng-click="updateTopic(pageSize *(currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
                             <button class="badge badge-important" ng-click="deleteTopic(pageSize *(currentPage - 1) + $index)">Delete</button>
@@ -88,7 +88,7 @@
         appName.controller('TopicController', function($scope, $http, MainUrl) {
           $scope.listTopic = [];
           $scope.currentPage = 1;
-          $scope.pageSize = 5;
+          $scope.pageSize = 10;
           $scope.topic = {};
           let map = new Map();
           
@@ -108,8 +108,8 @@
               $('.modal-title').html('Insert topic');
               $scope.topic = {};
               $('.control-group').removeClass('error');
-              $('#mgs_sec_vietnamese').addClass('hidden');
-              $('#mgs_sec_japanese').addClass('hidden');
+              $('#mgs_top_vietnamese').addClass('hidden');
+              $('#mgs_top_japanese').addClass('hidden');
               $('.mgs_modal').addClass('hidden');
               $('#myModal').modal('show');
             }
@@ -123,8 +123,8 @@
                 $scope.topic = angular.copy($scope.listTopic[index]);
                 $scope.topic.index = index;
                 $('.control-group').removeClass('error');
-                $('#mgs_sec_vietnamese').addClass('hidden');
-                $('#mgs_sec_japanese').addClass('hidden');
+                $('#mgs_top_vietnamese').addClass('hidden');
+                $('#mgs_top_japanese').addClass('hidden');
                 $('#myModal').modal('show');
             }
             //end updateTopic
@@ -133,8 +133,8 @@
             $scope.actionSave = function(){
               $('.loader').removeClass('hidden');
               $('.control-group').removeClass('error');
-              $('#mgs_sec_vietnamese').addClass('hidden');
-              $('#mgs_sec_japanese').addClass('hidden');
+              $('#mgs_top_vietnamese').addClass('hidden');
+              $('#mgs_top_japanese').addClass('hidden');
               $('.mgs_modal').addClass('hidden');
               var flag_ok = true;
               var Url = MainUrl+'/topic';
@@ -142,19 +142,19 @@
                 Url += '/update';
                 $scope.topic.keyTopic = map.get($scope.topic.index);
               }
-              if(angular.isUndefined($scope.topic.sec_vietnamese) &&
-                  angular.isUndefined($scope.topic.sec_japanese)) {
+              if(angular.isUndefined($scope.topic.top_vietnamese) &&
+                  angular.isUndefined($scope.topic.top_japanese)) {
                     $('.control-group').addClass('error');
-                    $('#mgs_sec_vietnamese').removeClass('hidden');
-                    $('#mgs_sec_japanese').removeClass('hidden');
+                    $('#mgs_top_vietnamese').removeClass('hidden');
+                    $('#mgs_top_japanese').removeClass('hidden');
                     flag_ok= false;
-              }else if(angular.isUndefined($scope.topic.sec_vietnamese)){
-                    $('#sec_vietnamese').parents('.control-group').addClass('error');
-                    $('#mgs_sec_vietnamese').removeClass('hidden');
+              }else if(angular.isUndefined($scope.topic.top_vietnamese)){
+                    $('#top_vietnamese').parents('.control-group').addClass('error');
+                    $('#mgs_top_vietnamese').removeClass('hidden');
                     flag_ok= false;
-              } else if(angular.isUndefined($scope.topic.sec_japanese)){
-                    $('#sec_japanese').parents('.control-group').addClass('error');
-                    $('#mgs_sec_japanese').removeClass('hidden');
+              } else if(angular.isUndefined($scope.topic.top_japanese)){
+                    $('#top_japanese').parents('.control-group').addClass('error');
+                    $('#mgs_top_japanese').removeClass('hidden');
                     flag_ok= false;
               }
               if(flag_ok == false){
@@ -191,7 +191,7 @@
                    
             //deleteTopic
             $scope.deleteTopic = function(index){
-                alertify.confirm('Confirm delete', 'Do you want to delete ['+$scope.listTopic[index].sec_vietnamese+'] ?', function(){ 
+                alertify.confirm('Confirm delete', 'Do you want to delete ?', function(){ 
                     var Url = MainUrl+'/topic/delete';
                     $scope.topic.keyTopic = map.get(index);
                     var reData = $.param($scope.topic);
@@ -200,7 +200,7 @@
                     ).then(function (response){
                        if(response.data.error == false){
                           alertify.set('notifier', 'position', 'top-center');
-                          alertify.success('Delete ['+$scope.listTopic[index].sec_vietnamese+'] complete.').dismissOthers();
+                          alertify.success('Delete row complete.').dismissOthers();
                           $scope.listTopic.splice(index, 1);
                           //delete map key
                           map.delete(index);
@@ -223,6 +223,7 @@
                     }, function(){});
             }
             //end actionDelete
+            //clear cache: php artisan config:cache 
         });
 </script>
 
@@ -252,10 +253,10 @@
             <div class="control-group">
                 <label class="control-label">Topic vietnamese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
               <div class="controls">
-                <input type="t" class="span6" id="sec_vietnamese" name="sec_vietnamese" placeholder="Topic vietnamese "
-                ng-model="topic.sec_vietnamese"
+                <input type="t" class="span6" id="top_vietnamese" name="top_vietnamese" placeholder="Topic vietnamese "
+                ng-model="topic.top_vietnamese"
                 ng-required="true" />
-                <span for="sec_vietnamese" generated="true" id="mgs_sec_vietnamese"
+                <span for="top_vietnamese" generated="true" id="mgs_top_vietnamese"
                 class="help-inline hidden"
                 >Topic vietnamese  is required and can't be empty</span>
               </div>
@@ -263,18 +264,18 @@
             <div class="control-group">
                 <label class="control-label">Topic japanese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
               <div class="controls">
-                <input type="t" class="span6" id="sec_japanese" name="sec_japanese" placeholder="Topic japanese "
-                ng-model="topic.sec_japanese"
+                <input type="t" class="span6" id="top_japanese" name="top_japanese" placeholder="Topic japanese "
+                ng-model="topic.top_japanese"
                 ng-required="true" />
-                <span for="sec_japanese" generated="true" id="mgs_sec_japanese"
+                <span for="top_japanese" generated="true" id="mgs_top_japanese"
                 class="help-inline hidden"
                 >Topic japanese  is required and can't be empty</span>
               </div>
             </div>
             <label class="control-label">Topic description :</label>
             <div class="controls">
-                <textarea rows="4" cols="50" class="span6" id="sec_description " name="sec_description " placeholder="Topic description"
-                          ng-model="topic.sec_description" ng-required="false" >
+                <textarea rows="4" cols="50" class="span6" id="top_description " name="top_description " placeholder="Topic description"
+                          ng-model="topic.top_description" ng-required="false" >
                 </textarea>
             </div>
           </form>

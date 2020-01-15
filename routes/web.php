@@ -38,8 +38,16 @@ Route::get('/translatemean', 'TranslateMeanController@index');
 Route::post('/translatemean', 'TranslateMeanController@store');
 Route::post('/translatemean/update', 'TranslateMeanController@update');
 Route::post('/translatemean/delete', 'TranslateMeanController@delete');
-Route::get('/translatemean/dvtquydoi/{id}', 'TranslateMeanController@dvtquydoi');
 
 Route::get('/translatemean/index', function () {
     return view('translatemean', ['controllername' => 'TranslateMeanController']);
+});
+
+Route::get('/topic', 'TopicController@index');
+Route::post('/topic', 'TopicController@store');
+Route::post('/topic/update', 'TopicController@update');
+Route::post('/topic/delete', 'TopicController@delete');
+
+Route::get('/topic/index', function () {
+    return view('topic', ['controllername' => 'TopicController']);
 });
