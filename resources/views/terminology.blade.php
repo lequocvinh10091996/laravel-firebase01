@@ -254,7 +254,7 @@
             }
             //end actionDelete
             
-            //get list type config
+            //get list section
             $scope.listSection = [];
             $http.get(MainUrl+'/section').then(function(response){
               data = response.data.data.listSection;

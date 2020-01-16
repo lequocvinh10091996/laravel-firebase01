@@ -24,29 +24,11 @@ class TopicController extends BaseController
         $json = null;
         $key = null;
         $data = array(
-            'top_vietnamese' => $request->top_vietnamese,
-            'top_japanese' => $request->top_japanese,
-            'top_description' => $request->top_description,
-            'top_flag' => 1,
+            'tp_vietnamese' => $request->tp_vietnamese,
+            'tp_japanese' => $request->tp_japanese,
+            'tp_description' => $request->tp_description,
+            'tp_flag' => 1,
         );
-        //check duplicate username
-        $reference = $this->database->getReference('mst_topic')->getValue();
-        $errorDuplicate = false;
-        if ($reference) {
-            foreach ($reference as $key => $value) {
-                if (is_array($value)) {
-                    if ($data['top_vietnamese'] == $value['top_vietnamese'] || $data['top_japanese'] == $value['top_japanese']) {
-                        $errorDuplicate = true;
-                    }
-                }
-            }
-        }
-        if ($errorDuplicate) {
-            return response([
-                'error' => true,
-                'data' => 'Topic is duplicate !'
-                    ], 200);
-        }
         //insert
         $topicId = $this->database->getReference('mst_topic')->push($data)->getKey();
         //get data
@@ -74,32 +56,17 @@ class TopicController extends BaseController
             ], 200);
         }
         $data = array(
-            'top_vietnamese' => $request->top_vietnamese,
-            'top_japanese' => $request->top_japanese,
-            'top_description' => $request->top_description,
+            'tp_vietnamese' => $request->tp_vietnamese,
+            'tp_japanese' => $request->tp_japanese,
+            'tp_description' => $request->tp_description,
             'acc_flag' => 1,
         );
-        //check duplicate username
-        $reference = $this->database->getReference('mst_topic')->getValue();
-        $errorDuplicate = false;
-        $keyExist = false;
-        foreach ($reference as $key => $value) {
-            if (is_array($value) && $keyTopic != $key) {
-                if ($data['top_vietnamese'] == $value['top_vietnamese'] || $data['top_japanese'] == $value['top_japanese']) {
-                    $errorDuplicate = true;
-                }
-            }
-            if ($keyTopic == $key) {
-                $keyExist = true;
-            }
-        }
-        if ($errorDuplicate) {
-            return response([
-                'error' => true,
-                'data' => 'Topic is duplicate !'
-                    ], 200);
-        }
         //check key exist
+        $reference = $this->database->getReference('mst_topic')->getValue();
+        $keyExist = false;
+        if (isset($reference[$keyTopic])) {
+            $keyExist = true;
+        }
         if ($keyExist) {
             //update
             $this->database->getReference('mst_topic/' . $keyTopic)->update($data);

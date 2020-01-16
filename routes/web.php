@@ -34,13 +34,13 @@ Route::get('/section/index', function () {
     return view('section', ['controllername' => 'SectionController']);
 });
 
-Route::get('/translatemean', 'TranslateMeanController@index');
-Route::post('/translatemean', 'TranslateMeanController@store');
-Route::post('/translatemean/update', 'TranslateMeanController@update');
-Route::post('/translatemean/delete', 'TranslateMeanController@delete');
+Route::get('/terminology', 'TerminologyController@index');
+Route::post('/terminology', 'TerminologyController@store');
+Route::post('/terminology/update', 'TerminologyController@update');
+Route::post('/terminology/delete', 'TerminologyController@delete');
 
-Route::get('/translatemean/index', function () {
-    return view('translatemean', ['controllername' => 'TranslateMeanController']);
+Route::get('/terminology/index', function () {
+    return view('terminology', ['controllername' => 'TerminologyController']);
 });
 
 Route::get('/topic', 'TopicController@index');

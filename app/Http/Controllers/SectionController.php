@@ -10,9 +10,15 @@ class SectionController extends BaseController
     public function index() {
         $json = array();
         $listSection = $this->database->getReference('mst_section')->getValue();
-        if($listSection){
-          $json = json_encode($listSection);   
-        } 
+        $listTopic = $this->database->getReference('mst_topic')->getValue();
+        if ($listSection) {
+            foreach ($listSection as $key => $value) {
+                if (isset($listTopic[$value['tp_id']])) {
+                    $listSection[$key]['tp_vietnamese'] = $listTopic[$value['tp_id']]['tp_vietnamese'];
+                }
+            }
+            $json = json_encode($listSection);   
+        }
         return response([
             'error' => false,
             'data' => compact('listSection', $json)
@@ -24,36 +30,24 @@ class SectionController extends BaseController
         $json = null;
         $key = null;
         $data = array(
+            'tp_id' => $request->tp_id,
             'sec_vietnamese' => $request->sec_vietnamese,
             'sec_japanese' => $request->sec_japanese,
             'sec_description' => $request->sec_description,
             'sec_flag' => 1,
         );
-        //check duplicate username
-        $reference = $this->database->getReference('mst_section')->getValue();
-        $errorDuplicate = false;
-        if ($reference) {
-            foreach ($reference as $key => $value) {
-                if (is_array($value)) {
-                    if ($data['sec_vietnamese'] == $value['sec_vietnamese'] || $data['sec_japanese'] == $value['sec_japanese']) {
-                        $errorDuplicate = true;
-                    }
-                }
-            }
-        }
-        if ($errorDuplicate) {
-            return response([
-                'error' => true,
-                'data' => 'Section is duplicate !'
-                    ], 200);
-        }
         //insert
         $sectionId = $this->database->getReference('mst_section')->push($data)->getKey();
         //get data
         if ($sectionId) {
-            $currentConfigType = $this->database->getReference('mst_section/' . $sectionId)->getValue();
+            $currentSection = $this->database->getReference('mst_section/' . $sectionId)->getValue();
+            //get name of id in topic
+            $listTopic = $this->database->getReference('mst_topic')->getValue();
+            if (isset($listTopic[$data['tp_id']])) {
+                $currentSection['tp_vietnamese'] = $listTopic[$data['tp_id']]['tp_vietnamese'];
+            }
             $error = false;
-            $json = json_encode($currentConfigType);
+            $json = json_encode($currentSection);
             $key = $sectionId;
         }
         return response([
@@ -74,39 +68,30 @@ class SectionController extends BaseController
             ], 200);
         }
         $data = array(
+            'tp_id' => $request->tp_id,
             'sec_vietnamese' => $request->sec_vietnamese,
             'sec_japanese' => $request->sec_japanese,
             'sec_description' => $request->sec_description,
             'acc_flag' => 1,
         );
-        //check duplicate username
-        $reference = $this->database->getReference('mst_section')->getValue();
-        $errorDuplicate = false;
-        $keyExist = false;
-        foreach ($reference as $key => $value) {
-            if (is_array($value) && $keySection != $key) {
-                if ($data['sec_vietnamese'] == $value['sec_vietnamese'] || $data['sec_japanese'] == $value['sec_japanese']) {
-                    $errorDuplicate = true;
-                }
-            }
-            if ($keySection == $key) {
-                $keyExist = true;
-            }
-        }
-        if ($errorDuplicate) {
-            return response([
-                'error' => true,
-                'data' => 'Section is duplicate !'
-                    ], 200);
-        }
         //check key exist
+        $reference = $this->database->getReference('mst_section')->getValue();
+        $keyExist = false;
+        if (isset($reference[$keySection])) {
+            $keyExist = true;
+        }
         if ($keyExist) {
             //update
             $this->database->getReference('mst_section/' . $keySection)->update($data);
             //get data
-            $currentConfigType = $this->database->getReference('mst_section/' . $keySection)->getValue();
+            $currentSection = $this->database->getReference('mst_section/' . $keySection)->getValue();
+            //get name of id in topic
+            $listTopic = $this->database->getReference('mst_topic')->getValue();
+            if (isset($listTopic[$data['tp_id']])) {
+                $currentSection['tp_vietnamese'] = $listTopic[$data['tp_id']]['tp_vietnamese'];
+            }
             $error = false;
-            $json = json_encode($currentConfigType);
+            $json = json_encode($currentSection);
         }
         return response([
             'error' => $error,

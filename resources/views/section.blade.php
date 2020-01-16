@@ -62,6 +62,7 @@
                 <thead>
                     <tr>
                         <th></th>
+                        <th>Topic</th>
                         <th>Section vietnamese</th>
                         <th>Section japanese</th>
                         <th>Section description</th>
@@ -71,6 +72,7 @@
                 <tbody>
                     <tr  dir-paginate="section in listSection|itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
+                        <td style="width: 15%;"><% section.tp_vietnamese %></td>
                         <td style="width: 15%;"><% section.sec_vietnamese %></td>
                         <td style="width: 15%;"><% section.sec_japanese %></td>
                         <td><% section.sec_description  %></td>
@@ -106,6 +108,8 @@
             //insertSection
             $scope.insertSection = function(){
               $('.modal-title').html('Insert section');
+              $("#tp_id").select2("val", "");
+              $('#mgs_tp_id').addClass('hidden');
               $scope.section = {};
               $('.control-group').removeClass('error');
               $('#mgs_sec_vietnamese').addClass('hidden');
@@ -122,6 +126,8 @@
                 $scope.section = {};
                 $scope.section = angular.copy($scope.listSection[index]);
                 $scope.section.index = index;
+                $("#tp_id").select2("val", $scope.listSection[index].tp_id);
+                $('#mgs_tp_id').addClass('hidden');
                 $('.control-group').removeClass('error');
                 $('#mgs_sec_vietnamese').addClass('hidden');
                 $('#mgs_sec_japanese').addClass('hidden');
@@ -133,6 +139,7 @@
             $scope.actionSave = function(){
               $('.loader').removeClass('hidden');
               $('.control-group').removeClass('error');
+              $('#mgs_tp_id').addClass('hidden');
               $('#mgs_sec_vietnamese').addClass('hidden');
               $('#mgs_sec_japanese').addClass('hidden');
               $('.mgs_modal').addClass('hidden');
@@ -142,13 +149,19 @@
                 Url += '/update';
                 $scope.section.keySection = map.get($scope.section.index);
               }
-              if(angular.isUndefined($scope.section.sec_vietnamese) &&
+              if(angular.isUndefined($scope.section.tp_id) && 
+                 angular.isUndefined($scope.section.sec_vietnamese) &&
                   angular.isUndefined($scope.section.sec_japanese)) {
                     $('.control-group').addClass('error');
+                    $('#mgs_tp_id').removeClass('hidden');
                     $('#mgs_sec_vietnamese').removeClass('hidden');
                     $('#mgs_sec_japanese').removeClass('hidden');
                     flag_ok= false;
-              }else if(angular.isUndefined($scope.section.sec_vietnamese)){
+              } else if(angular.isUndefined($scope.section.tp_id)){
+                $('#tp_id').parents('.control-group').addClass('error');
+                $('#mgs_tp_id').removeClass('hidden');
+                flag_ok= false;
+              } else if(angular.isUndefined($scope.section.sec_vietnamese)){
                     $('#sec_vietnamese').parents('.control-group').addClass('error');
                     $('#mgs_sec_vietnamese').removeClass('hidden');
                     flag_ok= false;
@@ -223,6 +236,17 @@
                     }, function(){});
             }
             //end actionDelete
+            //get list topic
+            $scope.listTopic = [];
+            $http.get(MainUrl+'/topic').then(function(response){
+              data = response.data.data.listTopic;
+                if(data){
+                    $.each(data, function( key, value ) {
+                      $scope.listTopic.push({tp_id: key,
+                                                 value: value});
+                    });
+                }
+            });
         });
 </script>
 
@@ -249,6 +273,20 @@
             </div>
           <form name="frmInsertSection" action="#" class="form-horizontal" novalidate="novalidate">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <div class="control-group">
+              <label class="control-label">Topic <i class="icon icon-asterisk" style="color: red;"></i>:</label>
+              <div class="controls">
+                <select id="tp_id" name="tp_id" placeholder="Topic" ng-model="section.tp_id" ng-required="true" style="width: 51% !important;">
+                  <option   value="" > --- Please choose --- </option>
+                  <option  ng-repeat="topic in listTopic" value="<% topic.tp_id %>" >
+                    <% topic.value.tp_vietnamese %>
+                  </option>
+                </select>
+                <span for="tp_id" generated="true" id="mgs_tp_id"
+                class="help-inline hidden"
+                >Topic is required and can't be empty</span>
+              </div>
+            </div>
             <div class="control-group">
                 <label class="control-label">Section vietnamese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
               <div class="controls">
