@@ -55,9 +55,10 @@
             <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTerminology()">Insert</button>
           </div>
         </div>
+        <label style="margin: 5px 0px -15px 5px;"><b>Search:</b> <input ng-model="search.tm_japanese_translate"></label><br>
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
-            <table class="table table-striped table-bordered tab-content input-block-level">
+            <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th></th>
@@ -70,7 +71,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="terminology in listTerminology|itemsPerPage: pageSize" current-page="currentPage">
+                    <tr  dir-paginate="terminology in listTerminology | itemsPerPage: pageSize | filter:search:strict" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% terminology.sec_vietnamese %></td>
                         <td><% terminology.tm_japanese_translate %></td>

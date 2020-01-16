@@ -55,10 +55,10 @@
             <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertAccount()">Insert</button>
           </div>
         </div>
-
+        <label style="margin: 5px 0px -15px 5px;"><b>Search:</b> <input ng-model="search.$"></label><br>
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
-            <table class="table table-striped table-bordered tab-content input-block-level">
+            <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th></th>
@@ -68,12 +68,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="account in listAccount|itemsPerPage: pageSize" current-page="currentPage">
+                    <tr  dir-paginate="account in listAccount | itemsPerPage: pageSize | filter:search:strict" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize * (currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% account.acc_username %></td>
                         <td><% account.acc_email %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <button class="badge badge-info" ng-click="updateAccount(pageSize * (currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
+                            <button class="badge badge-info" ng-click="updateAccount(listAccount.indexOf(account))" >Update</button>&nbsp;&nbsp;
                             <button class="badge badge-important" ng-click="deleteAccount(pageSize * (currentPage - 1) + $index)">Delete</button>
                         </td>
                     </tr>
@@ -121,6 +121,7 @@
                 $('.modal-title').html('Update account');
                 $('.mgs_modal').addClass('hidden');
                 $scope.account = {};
+                console.log(index);
                 $scope.account = angular.copy($scope.listAccount[index]);
                 $scope.account.index = index;
                 $('.control-group').removeClass('error');

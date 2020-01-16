@@ -11,6 +11,9 @@ class AccountController extends BaseController
     public function index() {
         $json = array();
         $listAccount = $this->database->getReference('mst_account')->getValue();
+        foreach($listAccount as $key => $value){
+            $listAccount[$key]['acc_password'] = Crypt::decryptString($value['acc_password']);
+        }
         if($listAccount){
           $json = json_encode($listAccount);   
         } 
@@ -57,6 +60,7 @@ class AccountController extends BaseController
         //get data
         if ($accountId) {
             $currentAccount = $this->database->getReference('mst_account/' . $accountId)->getValue();
+            $currentAccount['acc_password'] = Crypt::decryptString($currentAccount['acc_password']);
             $error = false;
             $json = json_encode($currentAccount);
             $key = $accountId;
