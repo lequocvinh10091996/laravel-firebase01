@@ -77,8 +77,8 @@
                         <td style="width: 15%;"><% section.sec_japanese %></td>
                         <td><% section.sec_description  %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <button class="badge badge-info" ng-click="updateSection(pageSize *(currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteSection(pageSize *(currentPage - 1) + $index)">Delete</button>
+                            <button class="badge badge-info" ng-click="updateSection(listSection.indexOf(section))" >Update</button>&nbsp;&nbsp;
+                            <button class="badge badge-important" ng-click="deleteSection(listSection.indexOf(section))">Delete</button>
                         </td>
                     </tr>
                 </tbody>

@@ -74,7 +74,7 @@
                         <td><% account.acc_email %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
                             <button class="badge badge-info" ng-click="updateAccount(listAccount.indexOf(account))" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteAccount(pageSize * (currentPage - 1) + $index)">Delete</button>
+                            <button class="badge badge-important" ng-click="deleteAccount(listAccount.indexOf(account))">Delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -121,7 +121,6 @@
                 $('.modal-title').html('Update account');
                 $('.mgs_modal').addClass('hidden');
                 $scope.account = {};
-                console.log(index);
                 $scope.account = angular.copy($scope.listAccount[index]);
                 $scope.account.index = index;
                 $('.control-group').removeClass('error');

@@ -75,8 +75,8 @@
                         <td style="width: 15%;"><% topic.tp_japanese %></td>
                         <td><% topic.tp_description  %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <button class="badge badge-info" ng-click="updateTopic(pageSize *(currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteTopic(pageSize *(currentPage - 1) + $index)">Delete</button>
+                            <button class="badge badge-info" ng-click="updateTopic(listTopic.indexOf(topic))" >Update</button>&nbsp;&nbsp;
+                            <button class="badge badge-important" ng-click="deleteTopic(listTopic.indexOf(topic))">Delete</button>
                         </td>
                     </tr>
                 </tbody>

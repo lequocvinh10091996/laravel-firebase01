@@ -79,8 +79,8 @@
                         <td><% terminology.tm_vietnamese_translate %></td>
                         <td><% terminology.tm_english_translate %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <button class="badge badge-info" ng-click="updateTerminology(pageSize *(currentPage - 1) + $index)" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteTerminology(pageSize *(currentPage - 1) + $index)">Delete</button>
+                            <button class="badge badge-info" ng-click="updateTerminology(listTerminology.indexOf(terminology))" >Update</button>&nbsp;&nbsp;
+                            <button class="badge badge-important" ng-click="deleteTerminology(listTerminology.indexOf(terminology))">Delete</button>
                         </td>
                     </tr>
                 </tbody>
