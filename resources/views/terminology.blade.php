@@ -55,7 +55,7 @@
             <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTerminology()">Insert</button>
           </div>
         </div>
-        <label style="margin: 5px 0px -15px 5px;"><b>Search:</b> <input ng-model="search.tm_japanese_translate"></label><br>
+        <label style="margin: 5px 0px -15px 5px;"><b>Search:</b> <input ng-model="search"></label><br>
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
             <table class="table table-striped table-bordered">
@@ -71,7 +71,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="terminology in listTerminology | itemsPerPage: pageSize | filter:search:strict" current-page="currentPage">
+                    <tr  dir-paginate="terminology in listTerminology | itemsPerPage: pageSize | filter:filterOnLocation" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% terminology.sec_vietnamese %></td>
                         <td><% terminology.tm_japanese_translate %></td>
@@ -95,6 +95,10 @@
           $scope.pageSize = 10;
           $scope.terminology = {};
           let map = new Map();
+          $scope.search = '';
+          $scope.filterOnLocation = function(terminology) {
+            return (terminology.tm_japanese_translate + terminology.tm_vietnamese_translate).indexOf($scope.search) >= 0;
+          };
           
             $http.get(MainUrl+'/terminology').then(function(response){
               data = response.data.data.listTerminology;
