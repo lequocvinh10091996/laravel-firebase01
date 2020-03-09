@@ -51,3 +51,12 @@ Route::post('/topic/delete', 'TopicController@delete');
 Route::get('/topic/index', function () {
     return view('topic', ['controllername' => 'TopicController']);
 });
+
+Route::get('/googlesheet', 'GoogleSheetController@index');
+Route::post('/googlesheet', 'GoogleSheetController@store');
+Route::post('/googlesheet/update', 'GoogleSheetController@update');
+Route::post('/googlesheet/delete', 'GoogleSheetController@delete');
+
+Route::get('/googlesheet/index', function () {
+    return view('googlesheet', ['controllername' => 'GoogleSheetController']);
+});

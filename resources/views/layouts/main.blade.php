@@ -97,6 +97,9 @@
     <li class="@if($controllername == 'TopicController' ){{'active'}}@endif">
       <a href="{{ url('/topic/index') }}"><i class="icon icon-book"></i> <span>Topic</span></a>
     </li>
+    <li class="@if($controllername == 'GoogleSheetController' ){{'active'}}@endif">
+      <a href="{{ url('/googlesheet/index') }}"><i class="icon icon-book"></i> <span>Insert Google Sheet</span></a>
+    </li>
   </ul>
 </div>
 <!--sidebar-menu-->
