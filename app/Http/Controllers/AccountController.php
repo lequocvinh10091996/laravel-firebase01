@@ -33,10 +33,6 @@ class AccountController extends BaseController
             'acc_email' => $request->acc_email,
             'acc_flag' => 1,
         );
-//        $encrypted = Crypt::encryptString('Hello world.');
-//
-//$decrypted = Crypt::decryptString($encrypted);
-//print_r($encrypted);die;
         //check duplicate username
         $reference = $this->database->getReference('mst_account')->getValue();
         $errorDuplicate = false;

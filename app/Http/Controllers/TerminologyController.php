@@ -17,6 +17,10 @@ class TerminologyController extends BaseController
                 if (isset($listSection[$value['sec_id']])) {
                     $listTerminology[$key]['sec_vietnamese'] = $listSection[$value['sec_id']]['sec_vietnamese'];
                 }
+//                $this->database->getReference('mst_translate_mean/'.$key)->update([
+//                    'tm_example' => '',
+//                    'tm_insert_user' => '',
+//                ]);
             }
             $json = json_encode($listTerminology);   
         } 
@@ -36,6 +40,8 @@ class TerminologyController extends BaseController
             'tm_japanese_translate' => $request->tm_japanese_translate,
             'tm_japanese_higarana' => $request->tm_japanese_higarana,
             'tm_vietnamese_translate' => $request->tm_vietnamese_translate,
+            'tm_example' => $request->tm_example,
+            'tm_insert_user' => session('acc_username'),
             'tm_flag' => 1,
         );
         //insert
@@ -76,6 +82,8 @@ class TerminologyController extends BaseController
             'tm_japanese_translate' => $request->tm_japanese_translate,
             'tm_japanese_higarana' => $request->tm_japanese_higarana,
             'tm_vietnamese_translate' => $request->tm_vietnamese_translate,
+            'tm_example' => $request->tm_example,
+            'tm_insert_user' => session('acc_username'),
             'tm_flag' => 1,
         );
         //check key exist

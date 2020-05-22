@@ -16,7 +16,7 @@
  <body>
   <br />
   <div class="container box">
-   <h3 align="center">Login System Firebase and Laravel</h3><br />
+   <h3 align="center">Login System</h3><br />
 
    @if ($message = Session::get('error'))
    <div class="alert alert-danger alert-block">

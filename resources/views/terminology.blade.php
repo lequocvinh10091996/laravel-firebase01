@@ -67,20 +67,32 @@
                         <th>Japanese Higarana</th>
                         <th>Vietnamese Translate</th>
                         <th>English Translate</th>
-                        <th>Action</th>
+                        <th>Example</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="terminology in listTerminology | itemsPerPage: pageSize | filter:filterOnLocation" current-page="currentPage">
+                    <tr  dir-paginate="terminology in listTerminology | filter:filterOnLocation | itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% terminology.sec_vietnamese %></td>
                         <td><% terminology.tm_japanese_translate %></td>
                         <td><% terminology.tm_japanese_higarana %></td>
                         <td><% terminology.tm_vietnamese_translate %></td>
                         <td><% terminology.tm_english_translate %></td>
+                        <td><% terminology.tm_example %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <button class="badge badge-info" ng-click="updateTerminology(listTerminology.indexOf(terminology))" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteTerminology(listTerminology.indexOf(terminology))">Delete</button>
+                            <div class="btn-group">
+                                <div class="btn-group dropleft" role="group">
+                                    <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only">Thao tác</span>
+                                    </button>
+                                    <div class="dropdown-menu" style="min-width: 103px !important;">
+                                        <button ng-click="updateTerminology(listTerminology.indexOf(terminology))" >Update</button>&nbsp;&nbsp;
+                                        <br>
+                                        <button ng-click="deleteTerminology(listTerminology.indexOf(terminology))" style="margin-top: 5px; margin-right: 9px;">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -92,12 +104,13 @@
         appName.controller('TerminologyController', function($scope, $http, MainUrl) {
           $scope.listTerminology = [];
           $scope.currentPage = 1;
-          $scope.pageSize = 10;
+          $scope.pageSize = 50;
           $scope.terminology = {};
           let map = new Map();
           $scope.search = '';
           $scope.filterOnLocation = function(terminology) {
-            return (terminology.tm_japanese_translate + terminology.tm_vietnamese_translate).indexOf($scope.search) >= 0;
+            return (terminology.sec_vietnamese + terminology.tm_japanese_translate + terminology.tm_japanese_higarana + 
+                    terminology.tm_vietnamese_translate + terminology.tm_english_translate + terminology.tm_example).indexOf($scope.search) >= 0;
           };
           
             $http.get(MainUrl+'/terminology').then(function(response){
@@ -349,6 +362,12 @@
                 <input type="text" class="span6" id="tm_english_translate" name="tm_english_translate" placeholder="English translate"
                 ng-model="terminology.tm_english_translate" ng-required="true"/>
               </div>
+            </div>
+            <label class="control-label">Example :</label>
+            <div class="controls">
+                <textarea rows="4" cols="50" class="span6" id="tm_example " name="tm_example " placeholder="Example"
+                          ng-model="terminology.tm_example" ng-required="false" >
+                </textarea>
             </div>
           </form>
         </div>

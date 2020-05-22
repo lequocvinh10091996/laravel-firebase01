@@ -32,7 +32,7 @@
 <script src="{{ asset('matriz-admin/alertify/alertify.min.js') }}"></script>
 
 <script src="{{ asset('js/angular.min.js') }}"></script>
-<script src="{{ asset('js/dirPaginate.js') }}"></script> 
+<script src="{{ asset('js/dirPaginate.js') }}"></script>
 
 <script>
 
@@ -68,7 +68,7 @@
 
 <!--Header-part-->
 <div id="header">
-  <h2>Laravel</h2>
+  <h2>IT Dic</h2>
 </div>
 <!--close-Header-part--> 
 
@@ -84,23 +84,20 @@
 <!--close-top-Header-menu-->
 <!--sidebar-menu-->
 <div id="sidebar">
-  <ul>
-    <li class="@if($controllername == 'AccountController' ){{'active'}}@endif">
-      <a href="{{ url('/account/index') }}"><i class="icon icon-home"></i> <span>Account</span></a> 
-    </li>
-    <li class="@if($controllername == 'TerminologyController' ){{'active'}}@endif">
-      <a href="{{ url('/terminology/index') }}"><i class="icon icon-th"></i> <span>Terminology</span></a> 
-    </li>
-    <li class="@if($controllername == 'SectionController' ){{'active'}}@endif">
-      <a href="{{ url('/section/index') }}"><i class="icon icon-inbox"></i> <span>Section</span></a> 
-    </li>
-    <li class="@if($controllername == 'TopicController' ){{'active'}}@endif">
-      <a href="{{ url('/topic/index') }}"><i class="icon icon-book"></i> <span>Topic</span></a>
-    </li>
-    <li class="@if($controllername == 'GoogleSheetController' ){{'active'}}@endif">
-      <a href="{{ url('/googlesheet/index') }}"><i class="icon icon-book"></i> <span>Insert Google Sheet</span></a>
-    </li>
-  </ul>
+    <ul>
+        <li class="@if($controllername == 'AccountController' ){{'active'}}@endif">
+            <a href="{{ url('/account/index') }}"><i class="icon icon-home"></i> <span>Account</span></a> 
+        </li>
+        <li class="@if($controllername == 'TerminologyController' ){{'active'}}@endif">
+            <a href="{{ url('/terminology/index') }}"><i class="icon icon-th"></i> <span>Terminology</span></a> 
+        </li>
+        <li class="@if($controllername == 'SectionController' ){{'active'}}@endif">
+            <a href="{{ url('/section/index') }}"><i class="icon icon-inbox"></i> <span>Section</span></a> 
+        </li>
+        <li class="@if($controllername == 'TopicController' ){{'active'}}@endif">
+            <a href="{{ url('/topic/index') }}"><i class="icon icon-book"></i> <span>Topic</span></a>
+        </li>
+    </ul>
 </div>
 <!--sidebar-menu-->
 
@@ -113,9 +110,9 @@
     <!--End-breadcrumbs-->
  <div class="container-fluid">
 
-    <div class="widget-box">
-        @yield('content')
-    </div>
+     <div class="widget-box">
+         @yield('content')
+     </div>
  </div>
 
 @yield('modal-content')
