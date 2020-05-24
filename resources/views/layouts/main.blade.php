@@ -76,7 +76,7 @@
 <!--top-Header-menu-->
 <div id="user-nav" class="navbar navbar-inverse">
   <ul class="nav">
-    
+      <li class=""><a href="#" onclick="togglePage()"><i class="icon icon-list"></i></a></li>
       <li class=""><a title="" href="#"><i class="icon icon-user"></i> <span class="text">Welcome: <b style="color: #49CCED;">{{session('acc_username')}}</b></span></a></li>
       <li class=""><a title="" href="#" onclick="window.location.href = window.location.protocol + '//' + partLocalhost +'/logout';"><i class="icon icon-share-alt"></i> <span class="text">Logout</span></a></li>
   </ul>
@@ -128,3 +128,22 @@
 
 </body>
 </html>
+<script>
+    function togglePage() {
+        if($("#content").css("margin-left") == "220px"){
+            $("#content").css("margin-left", "40px");
+            $("#sidebar ul").css("border-bottom", "0px");
+            $("#sidebar ul").css("width", "40px");
+            $("#sidebar ul li").css("border-top", "0px");
+            $("#sidebar ul li").css("border-bottom", "0px");
+            $('#sidebar ul li span').addClass('hidden');
+        } else {
+            $("#content").css("margin-left", "220px");
+            $("#sidebar ul").css("border-bottom", "1px solid #37414b");
+            $("#sidebar ul").css("width", "220px");
+            $("#sidebar ul li").css("border-top", "1px solid #37414b");
+            $("#sidebar ul li").css("border-bottom", "1px solid #37414b");
+            $('#sidebar ul li span').removeClass('hidden');
+        }
+    }
+</script>

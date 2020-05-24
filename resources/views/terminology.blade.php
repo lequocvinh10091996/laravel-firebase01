@@ -72,7 +72,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="terminology in listTerminology | filter:filterOnLocation | itemsPerPage: pageSize" current-page="currentPage">
+                    <tr  dir-paginate="terminology in listTerminology | filter: search | itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% terminology.sec_vietnamese %></td>
                         <td><% terminology.tm_japanese_translate %></td>
@@ -83,13 +83,17 @@
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
                             <div class="btn-group">
                                 <div class="btn-group dropleft" role="group">
+                                    <button type="button" class="btn btn-warning">Action</button>
                                     <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span class="sr-only">Thao tác</span>
+                                        <i class="icon icon-sort-down"></i>
                                     </button>
                                     <div class="dropdown-menu" style="min-width: 103px !important;">
-                                        <button ng-click="updateTerminology(listTerminology.indexOf(terminology))" >Update</button>&nbsp;&nbsp;
-                                        <br>
-                                        <button ng-click="deleteTerminology(listTerminology.indexOf(terminology))" style="margin-top: 5px; margin-right: 9px;">Delete</button>
+                                        <li>
+                                            <a href="" ng-click="updateTerminology(listTerminology.indexOf(terminology))">Update</a>
+                                        </li>
+                                        <li>
+                                            <a href="" ng-click="deleteTerminology(listTerminology.indexOf(terminology))">Delete</a>
+                                        </li>
                                     </div>
                                 </div>
                             </div>
@@ -107,11 +111,6 @@
           $scope.pageSize = 50;
           $scope.terminology = {};
           let map = new Map();
-          $scope.search = '';
-          $scope.filterOnLocation = function(terminology) {
-            return (terminology.sec_vietnamese + terminology.tm_japanese_translate + terminology.tm_japanese_higarana + 
-                    terminology.tm_vietnamese_translate + terminology.tm_english_translate + terminology.tm_example).indexOf($scope.search) >= 0;
-          };
           
             $http.get(MainUrl+'/terminology').then(function(response){
               data = response.data.data.listTerminology;

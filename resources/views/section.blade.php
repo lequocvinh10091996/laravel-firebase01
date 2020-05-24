@@ -77,8 +77,24 @@
                         <td style="width: 15%;"><% section.sec_japanese %></td>
                         <td><% section.sec_description  %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <button class="badge badge-info" ng-click="updateSection(listSection.indexOf(section))" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteSection(listSection.indexOf(section))">Delete</button>
+<!--                            <button class="badge badge-info" ng-click="updateSection(listSection.indexOf(section))" >Update</button>&nbsp;&nbsp;
+                            <button class="badge badge-important" ng-click="deleteSection(listSection.indexOf(section))">Delete</button>-->
+                            <div class="btn-group">
+                                <div class="btn-group dropleft" role="group">
+                                    <button type="button" class="btn btn-warning">Action</button>
+                                    <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="icon icon-sort-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu" style="min-width: 103px !important;">
+                                        <li>
+                                            <a href="" ng-click="updateSection(listSection.indexOf(section))">Update</a>
+                                        </li>
+                                        <li>
+                                            <a href="" ng-click="deleteSection(listSection.indexOf(section))">Delete</a>
+                                        </li>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
