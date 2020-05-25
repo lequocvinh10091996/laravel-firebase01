@@ -89,10 +89,10 @@
                                     </button>
                                     <div class="dropdown-menu" style="min-width: 103px !important;">
                                         <li>
-                                            <a href="" ng-click="updateTerminology(listTerminology.indexOf(terminology))">Update</a>
+                                            <a href="" ng-click="updateTerminology(listTerminology.indexOf(terminology))"><b style="font-size: 14px;">Update</b></a>
                                         </li>
                                         <li>
-                                            <a href="" ng-click="deleteTerminology(listTerminology.indexOf(terminology))">Delete</a>
+                                            <a href="" ng-click="deleteTerminology(listTerminology.indexOf(terminology))"><b style="font-size: 14px;">Delete</b></a>
                                         </li>
                                     </div>
                                 </div>

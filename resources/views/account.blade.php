@@ -68,7 +68,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="account in listAccount | itemsPerPage: pageSize | filter:search:strict" current-page="currentPage">
+                    <tr  dir-paginate="account in listAccount | filter:search:strict | itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize * (currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% account.acc_username %></td>
                         <td><% account.acc_email %></td>
@@ -83,10 +83,10 @@
                                     </button>
                                     <div class="dropdown-menu" style="min-width: 103px !important;">
                                         <li>
-                                            <a href="" ng-click="updateAccount(listAccount.indexOf(account))">Update</a>
+                                            <a href="" ng-click="updateAccount(listAccount.indexOf(account))"><b style="font-size: 14px;">Update</b></a>
                                         </li>
                                         <li>
-                                            <a href="" ng-click="deleteAccount(listAccount.indexOf(account))">Delete</a>
+                                            <a href="" ng-click="deleteAccount(listAccount.indexOf(account))"><b style="font-size: 14px;">Delete</b></a>
                                         </li>
                                     </div>
                                 </div>

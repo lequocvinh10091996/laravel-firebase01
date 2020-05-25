@@ -70,7 +70,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="section in listSection | itemsPerPage: pageSize | filter:search:strict" current-page="currentPage">
+                    <tr  dir-paginate="section in listSection | filter:search:strict | itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% section.tp_vietnamese %></td>
                         <td style="width: 15%;"><% section.sec_vietnamese %></td>
@@ -87,10 +87,10 @@
                                     </button>
                                     <div class="dropdown-menu" style="min-width: 103px !important;">
                                         <li>
-                                            <a href="" ng-click="updateSection(listSection.indexOf(section))">Update</a>
+                                            <a href="" ng-click="updateSection(listSection.indexOf(section))"><b style="font-size: 14px;">Update</b></a>
                                         </li>
                                         <li>
-                                            <a href="" ng-click="deleteSection(listSection.indexOf(section))">Delete</a>
+                                            <a href="" ng-click="deleteSection(listSection.indexOf(section))"><b style="font-size: 14px;">Delete</b></a>
                                         </li>
                                     </div>
                                 </div>
