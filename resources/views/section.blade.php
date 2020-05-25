@@ -66,7 +66,7 @@
                         <th>Section vietnamese</th>
                         <th>Section japanese</th>
                         <th>Section description</th>
-                        <th>Action</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,7 +106,7 @@
         appName.controller('SectionController', function($scope, $http, MainUrl) {
           $scope.listSection = [];
           $scope.currentPage = 1;
-          $scope.pageSize = 10;
+          $scope.pageSize = 50;
           $scope.section = {};
           let map = new Map();
           

@@ -64,7 +64,7 @@
                         <th></th>
                         <th>Username</th>
                         <th>Email</th>
-                        <th>Action</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,7 +102,7 @@
         appName.controller('AccountController', function($scope, $http, MainUrl) {
           $scope.listAccount = [];
           $scope.currentPage = 1;
-          $scope.pageSize = 10;
+          $scope.pageSize = 50;
           $scope.account = {};
           let map = new Map();
           

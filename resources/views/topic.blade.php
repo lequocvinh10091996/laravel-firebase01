@@ -50,7 +50,7 @@
             }
         </style>
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
-            <h5><b>List topic</b></h5>
+            <h5>List topic</h5>
           <div style="float: right;margin: 8px; margin-right: 16px;">
             <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTopic()">Insert</button>
           </div>
@@ -65,7 +65,7 @@
                         <th>Topic vietnamese</th>
                         <th>Topic japanese</th>
                         <th>Topic description</th>
-                        <th>Action</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -104,7 +104,7 @@
         appName.controller('TopicController', function($scope, $http, MainUrl) {
           $scope.listTopic = [];
           $scope.currentPage = 1;
-          $scope.pageSize = 10;
+          $scope.pageSize = 50;
           $scope.topic = {};
           let map = new Map();
           

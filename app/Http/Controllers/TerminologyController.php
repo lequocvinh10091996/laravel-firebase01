@@ -17,10 +17,6 @@ class TerminologyController extends BaseController
                 if (isset($listSection[$value['sec_id']])) {
                     $listTerminology[$key]['sec_vietnamese'] = $listSection[$value['sec_id']]['sec_vietnamese'];
                 }
-//                $this->database->getReference('mst_translate_mean/'.$key)->update([
-//                    'tm_example' => '',
-//                    'tm_insert_user' => '',
-//                ]);
             }
             $json = json_encode($listTerminology);   
         } 

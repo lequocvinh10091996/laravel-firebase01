@@ -129,6 +129,14 @@
 </body>
 </html>
 <script>
+    $(document).ready(function () {
+        $("#content").css("margin-left", "40px");
+        $("#sidebar ul").css("border-bottom", "0px");
+        $("#sidebar ul").css("width", "40px");
+        $("#sidebar ul li").css("border-top", "0px");
+        $("#sidebar ul li").css("border-bottom", "0px");
+        $('#sidebar ul li span').addClass('hidden');
+    });
     function togglePage() {
         if($("#content").css("margin-left") == "220px"){
             $("#content").css("margin-left", "40px");

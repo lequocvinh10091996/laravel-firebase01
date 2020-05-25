@@ -55,7 +55,14 @@
             <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTerminology()">Insert</button>
           </div>
         </div>
-        <label style="margin: 5px 0px -15px 5px;"><b>Search:</b> <input ng-model="search"></label><br>
+        <label style="margin: 5px 0px -15px 5px;">
+            <select ng-model="searchBy" id="searchAll" style="width: 6% !important;">
+                <option value="$">Search by</option>
+                <option value="tm_japanese_translate">JA-VI</option>
+                <option value="tm_vietnamese_translate">VI-JA</option>
+            </select> 
+            <input ng-model="search[searchBy]" class="form-control" type="text" placeholder="Search" aria-label="Search">
+        </label><br>
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
             <table class="table table-striped table-bordered">
@@ -110,6 +117,24 @@
           $scope.currentPage = 1;
           $scope.pageSize = 50;
           $scope.terminology = {};
+          $scope.search = [];
+          $scope.searchBy = "";
+//          $scope.filterOnLocation = $scope.search;
+          $( "#searchAll" ).click(function() {
+              console.log($scope.search[$scope.searchBy]);
+//              if($("#searchAll" ).val() == "Search by"){
+//                $scope.filterOnLocation = $scope.search; 
+//              } else if($("#searchAll" ).val() == "JA-VI"){
+//                  $scope.filterOnLocation = function(terminology) {
+//                        return (terminology.tm_japanese_translate + terminology.tm_japanese_higarana).indexOf($scope.search) >= 0;
+//                  }; 
+//              } else if($("#searchAll" ).val() == "VI-JA"){
+//                   $scope.filterOnLocation = function(terminology) {
+//                        return (terminology.tm_vietnamese_translate).indexOf($scope.search) >= 0;
+//                   };
+//              }
+          });
+          
           let map = new Map();
           
             $http.get(MainUrl+'/terminology').then(function(response){
