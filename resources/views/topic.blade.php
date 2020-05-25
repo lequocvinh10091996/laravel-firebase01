@@ -50,7 +50,7 @@
             }
         </style>
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
-          <h5>List topic</h5>
+            <h5><b>List topic</b></h5>
           <div style="float: right;margin: 8px; margin-right: 16px;">
             <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTopic()">Insert</button>
           </div>
