@@ -53,15 +53,31 @@
           <h5>List terminology</h5>
           <div style="float: right;margin: 8px; margin-right: 16px;">
             <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTerminology()">Insert</button>
+            <div class="btn-group">
+                <div class="btn-group dropleft" role="group">
+                    <button type="button" class="btn btn-success">Setting</button>
+                    <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="icon icon-sort-down"></i>
+                    </button>
+                    <div class="dropdown-menu" style="min-width: 103px !important;">
+                        <li>
+                            <a href="" ng-click="exportTerminology(listTerminology.indexOf(terminology))"><b style="font-size: 14px;">Export</b></a>
+                        </li>
+                        <li>
+                            <a href="" ng-click="importTerminology(listTerminology.indexOf(terminology))"><b style="font-size: 14px;">import</b></a>
+                        </li>
+                    </div>
+                </div>
+            </div>
           </div>
         </div>
         <label style="margin: 5px 0px -15px 5px;">
-            <select ng-model="searchBy" id="searchAll" style="width: 6% !important;">
-                <option value="$">Search by</option>
-                <option value="tm_japanese_translate">JA-VI</option>
-                <option value="tm_vietnamese_translate">VI-JA</option>
+            <select id="searchAll" style="width: 6% !important;">
+                <option>Search by</option>
+                <option>JA-VI</option>
+                <option>VI-JA</option>
             </select> 
-            <input ng-model="search[searchBy]" class="form-control" type="text" placeholder="Search" aria-label="Search">
+            <input ng-model="search" class="form-control search" type="text" placeholder="Search" aria-label="Search">
         </label><br>
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
@@ -79,7 +95,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="terminology in listTerminology | filter: search | itemsPerPage: pageSize" current-page="currentPage">
+                    <tr  dir-paginate="terminology in listTerminology | filter: filterOnLocation | itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% terminology.sec_vietnamese %></td>
                         <td><% terminology.tm_japanese_translate %></td>
@@ -117,22 +133,29 @@
           $scope.currentPage = 1;
           $scope.pageSize = 50;
           $scope.terminology = {};
-          $scope.search = [];
-          $scope.searchBy = "";
-//          $scope.filterOnLocation = $scope.search;
+          $scope.search = '';
+          
+          $(".search").keydown(function(){
+                if($("#searchAll" ).val() == "Search by"){
+                    $scope.filterOnLocation = $scope.search;
+                } else if($("#searchAll" ).val() == "VI-JA") {
+                    $scope.filterOnLocation = '{tm_japanese_translate:'+ $scope.search+ '}';
+                }
+          });
           $( "#searchAll" ).click(function() {
-              console.log($scope.search[$scope.searchBy]);
-//              if($("#searchAll" ).val() == "Search by"){
-//                $scope.filterOnLocation = $scope.search; 
-//              } else if($("#searchAll" ).val() == "JA-VI"){
-//                  $scope.filterOnLocation = function(terminology) {
-//                        return (terminology.tm_japanese_translate + terminology.tm_japanese_higarana).indexOf($scope.search) >= 0;
-//                  }; 
-//              } else if($("#searchAll" ).val() == "VI-JA"){
-//                   $scope.filterOnLocation = function(terminology) {
-//                        return (terminology.tm_vietnamese_translate).indexOf($scope.search) >= 0;
-//                   };
-//              }
+              $(".search").val("");
+              if ($("#searchAll" ).val() == "Search by") {
+                  $scope.filterOnLocation = $scope.search;
+              } else if ($("#searchAll" ).val() == "JA-VI") {
+                  $scope.filterOnLocation = function(terminology) {
+                        return (terminology.tm_japanese_translate + terminology.tm_japanese_higarana).indexOf($scope.search) >= 0;
+                  }; 
+              } else if ($("#searchAll" ).val() == "VI-JA") {
+                  $(".search").keydown(function(){
+                    $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
+                  });
+              }
+              
           });
           
           let map = new Map();
