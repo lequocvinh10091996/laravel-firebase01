@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
-@section('title', 'Topic')
-@section('title-current', 'List topic')
+@section('title', 'Setting')
+@section('title-current', 'Export CSV')
 @section('content')
         <style>
             .pagination {
@@ -50,54 +50,50 @@
             }
         </style>
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
-            <h5>List topic</h5>
-          <div style="float: right;margin: 8px; margin-right: 16px;">
-            <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTopic()">Insert</button>
-          </div>
+            <h5>Export CSV</h5>
         </div>
-        <label style="margin: 5px 0px -15px 5px;"><b>Search:</b> <input ng-model="search.$"></label><br>
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Topic vietnamese</th>
-                        <th>Topic japanese</th>
-                        <th>Topic description</th>
+                        <th>Name data</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="topic in listTopic | filter:search:strict | itemsPerPage: pageSize" current-page="currentPage">
-                        <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
-                        <td style="width: 15%;"><% topic.tp_vietnamese %></td>
-                        <td style="width: 15%;"><% topic.tp_japanese %></td>
-                        <td><% topic.tp_description  %></td>
+                    <tr>
+                        <td class="center" style="text-align: center; width: 2%;">1</td>
+                        <td style="width: 40%;">Account</td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <div class="btn-group">
-                                <div class="btn-group dropleft" role="group">
-                                    <button type="button" class="btn btn-warning">Action</button>
-                                    <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="icon icon-sort-down"></i>
-                                    </button>
-                                    <div class="dropdown-menu" style="min-width: 103px !important;">
-                                        <li>
-                                            <a href="" ng-click="updateTopic(listTopic.indexOf(topic))"><b style="font-size: 14px;">Update</b></a>
-                                        </li>
-                                        <li>
-                                            <a href="" ng-click="deleteTopic(listTopic.indexOf(topic))"><b style="font-size: 14px;">Delete</b></a>
-                                        </li>
-                                    </div>
-                                </div>
-                            </div>
+                            <a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center" style="text-align: center; width: 2%;">2</td>
+                        <td style="width: 40%;">Terminology</td>
+                        <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
+                            <a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center" style="text-align: center; width: 2%;">1</td>
+                        <td style="width: 40%;">Section</td>
+                        <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
+                            <a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center" style="text-align: center; width: 2%;">1</td>
+                        <td style="width: 40%;">Topic</td>
+                        <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
+                            <a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" >
-        </dir-pagination-controls>
       <script >
         appName.controller('TopicController', function($scope, $http, MainUrl) {
           $scope.listTopic = [];

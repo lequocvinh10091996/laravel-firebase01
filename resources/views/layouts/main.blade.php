@@ -79,6 +79,20 @@
       <li class=""><a href="#" onclick="togglePage()"><i class="icon icon-list"></i></a></li>
       <li class=""><a title="" href="#"><i class="icon icon-user"></i> <span class="text">Welcome: <b style="color: #49CCED;">{{session('acc_username')}}</b></span></a></li>
       <li class=""><a title="" href="#" onclick="window.location.href = window.location.protocol + '//' + partLocalhost +'/logout';"><i class="icon icon-share-alt"></i> <span class="text">Logout</span></a></li>
+      <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> <i class="icon icon-cog"></i>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="min-width: 76px;">
+              <ul style="list-style: none; margin: 0 0 5px 5px;">
+                  <li>
+                      <a href="{{ url('/export/index') }}"><b style="font-size: 14px;">Export</b></a>
+                  </li>
+                  <li>
+                      <a href=""><b style="font-size: 14px;">Import</b></a>
+                  </li>
+              </ul>
+          </div>
+      </li>
   </ul>
 </div>
 <!--close-top-Header-menu-->

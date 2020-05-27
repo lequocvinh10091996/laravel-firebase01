@@ -35,6 +35,7 @@ Route::get('/section/index', function () {
 });
 
 Route::get('/terminology', 'TerminologyController@index');
+Route::get('/terminology/export', 'TerminologyController@export')->name('terminologyExport');
 Route::post('/terminology', 'TerminologyController@store');
 Route::post('/terminology/update', 'TerminologyController@update');
 Route::post('/terminology/delete', 'TerminologyController@delete');
@@ -50,4 +51,13 @@ Route::post('/topic/delete', 'TopicController@delete');
 
 Route::get('/topic/index', function () {
     return view('topic', ['controllername' => 'TopicController']);
+});
+
+Route::get('/export', 'ExportController@index');
+Route::post('/export', 'ExportController@store');
+Route::post('/export/update', 'ExportController@update');
+Route::post('/export/delete', 'ExportController@delete');
+
+Route::get('/export/index', function () {
+    return view('export', ['controllername' => 'ExportController']);
 });

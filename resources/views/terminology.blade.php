@@ -52,23 +52,23 @@
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
           <h5>List terminology</h5>
           <div style="float: right;margin: 8px; margin-right: 16px;">
-            <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTerminology()">Insert</button>
-            <div class="btn-group">
-                <div class="btn-group dropleft" role="group">
-                    <button type="button" class="btn btn-success">Setting</button>
-                    <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="icon icon-sort-down"></i>
-                    </button>
-                    <div class="dropdown-menu" style="min-width: 103px !important;">
-                        <li>
-                            <a href="" ng-click="exportTerminology(listTerminology.indexOf(terminology))"><b style="font-size: 14px;">Export</b></a>
-                        </li>
-                        <li>
-                            <a href="" ng-click="importTerminology(listTerminology.indexOf(terminology))"><b style="font-size: 14px;">import</b></a>
-                        </li>
-                    </div>
-                </div>
-            </div>
+              <div class="btn-group">
+                  <div class="btn-group dropleft" role="group">
+                      <button type="button" class="btn btn-success">Setting</button>
+                      <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="icon icon-sort-down"></i>
+                      </button>
+                      <div class="dropdown-menu" style="min-width: 103px !important;">
+                          <li>
+                              <a href="{{ route('export') }}"><b style="font-size: 14px;">Export</b></a>
+                          </li>
+                          <li>
+                              <a><b>import</b></a>
+                          </li>
+                      </div>
+                  </div>
+              </div>
+              <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTerminology()">Insert</button>
           </div>
         </div>
         <label style="margin: 5px 0px -15px 5px;">

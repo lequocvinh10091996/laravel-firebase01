@@ -52,7 +52,23 @@
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
           <h5>List section</h5>
           <div style="float: right;margin: 8px; margin-right: 16px;">
-            <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertSection()">Insert</button>
+              <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertSection()">Insert</button>
+              <div class="btn-group">
+                  <div class="btn-group dropleft" role="group">
+                      <button type="button" class="btn btn-success">Setting</button>
+                      <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="icon icon-sort-down"></i>
+                      </button>
+                      <div class="dropdown-menu" style="min-width: 103px !important;">
+                          <li>
+                              <a href="" ng-click="updateSection(listSection.indexOf(section))"><b style="font-size: 14px;">Export</b></a>
+                          </li>
+                          <li>
+                              <a href="" ng-click="deleteSection(listSection.indexOf(section))"><b style="font-size: 14px;">Import</b></a>
+                          </li>
+                      </div>
+                  </div>
+              </div>
           </div>
         </div>
         <label style="margin: 5px 0px -15px 5px;"><b>Search:</b> <input ng-model="search.$"></label><br>
@@ -77,8 +93,6 @@
                         <td style="width: 15%;"><% section.sec_japanese %></td>
                         <td><% section.sec_description  %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-<!--                            <button class="badge badge-info" ng-click="updateSection(listSection.indexOf(section))" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteSection(listSection.indexOf(section))">Delete</button>-->
                             <div class="btn-group">
                                 <div class="btn-group dropleft" role="group">
                                     <button type="button" class="btn btn-warning">Action</button>

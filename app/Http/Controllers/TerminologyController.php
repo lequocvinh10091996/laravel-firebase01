@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use League\Csv\Writer;
+use SplTempFileObject;
 
 class TerminologyController extends BaseController
 {
@@ -121,5 +123,45 @@ class TerminologyController extends BaseController
         return response([
             'error' => false,
         ], 200);
+    }
+    
+    public function export($condition = null)
+    {
+        $csvname = "terminology_" . date("Y-m-d") . ".csv";
+        $csv = Writer::createFromFileObject(new SplTempFileObject());
+        $formatter = function (array $row): array {
+            foreach ($row as $key => $val) {
+                $row[$key] = mb_convert_encoding($val, "SJIS");
+            }
+            return $row;
+        };
+        
+        $listTerminology = $this->database->getReference('mst_translate_mean')->getValue();
+        $listSection = $this->database->getReference('mst_section')->getValue();
+        
+//        $csv->addFormatter($formatter);
+        $csv->insertOne(['Section', 'Japanese', 'Higarana', 'Vietnamese', 'English', 'Example', 'User', 'Flag']);
+
+        if ($listTerminology) {
+            foreach ($listTerminology as $key => $value) {
+                if (isset($listSection[$value['sec_id']])) {
+                    $listTerminology[$key]['sec_vietnamese'] = $listSection[$value['sec_id']]['sec_vietnamese'];
+                    unset($listTerminology[$key]['sec_id']);
+                    $listTerminologyExport[$key] = array(
+                        'sec_vietnamese' => $listTerminology[$key]['sec_vietnamese'],
+                        'tm_japanese_translate' => $listTerminology[$key]['tm_japanese_translate'],
+                        'tm_japanese_higarana' => $listTerminology[$key]['tm_japanese_higarana'],
+                        'tm_vietnamese_translate' => $listTerminology[$key]['tm_vietnamese_translate'],
+                        'tm_english_translate' => $listTerminology[$key]['tm_english_translate'],
+                        'tm_insert_user' => $listTerminology[$key]['tm_insert_user'],
+                        'tm_flag' => $listTerminology[$key]['tm_flag'],
+                    );
+                    
+                }
+            }  
+        } 
+
+        $csv->insertAll($listTerminologyExport);
+        $csv->output($csvname);
     }
 }

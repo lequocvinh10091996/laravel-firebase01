@@ -73,8 +73,6 @@
                         <td style="width: 15%;"><% account.acc_username %></td>
                         <td><% account.acc_email %></td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-<!--                            <button class="badge badge-info" ng-click="updateAccount(listAccount.indexOf(account))" >Update</button>&nbsp;&nbsp;
-                            <button class="badge badge-important" ng-click="deleteAccount(listAccount.indexOf(account))">Delete</button>-->
                             <div class="btn-group">
                                 <div class="btn-group dropleft" role="group">
                                     <button type="button" class="btn btn-warning">Action</button>
