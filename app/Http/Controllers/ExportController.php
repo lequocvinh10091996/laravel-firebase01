@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use League\Csv\Writer;
+use SplTempFileObject;
+use League\Csv\CharsetConverter;
 
 class ExportController extends BaseController
 {
@@ -21,27 +24,105 @@ class ExportController extends BaseController
 
     public function store(Request $request) {
         $error = true;
-        $json = null;
-        $key = null;
         $data = array(
-            'tp_vietnamese' => $request->tp_vietnamese,
-            'tp_japanese' => $request->tp_japanese,
-            'tp_description' => $request->tp_description,
-            'tp_flag' => 1,
+            'mst_account' => $request->mst_account,
+            'mst_translate_mean' => $request->mst_translate_mean,
+            'mst_section' => $request->mst_section,
+            'mst_topic' => $request->mst_topic,
         );
-        //insert
-        $topicId = $this->database->getReference('mst_topic')->push($data)->getKey();
-        //get data
-        if ($topicId) {
-            $currentConfigType = $this->database->getReference('mst_topic/' . $topicId)->getValue();
+        
+        if ($data['mst_account']) {
+            $csvname = "mst_account-" . date("Y-m-d") . ".csv";
+            $csv = Writer::createFromFileObject(new SplTempFileObject());
+
+            $listAccount = $this->database->getReference('mst_account')->getValue();
+            
+            $csv->insertOne(['Username', 'Email']);
+
+            if ($listAccount) {
+                foreach ($listAccount as $key => $value) {
+                    $listAccountExport[$key] = array(
+                        'acc_username' => $listAccount[$key]['acc_username'],
+                        'acc_email' => $listAccount[$key]['acc_email'],
+                    );
+                }
+            }
+
+            $csv->insertAll($listAccountExport);
+            $csv->output($csvname);
             $error = false;
-            $json = json_encode($currentConfigType);
-            $key = $topicId;
         }
+        
+//        if ($data['mst_translate_mean']) {
+//            $csvname = "mst_translate_mean-" . date("Y-m-d") . ".csv";
+//            $csv = Writer::createFromFileObject(new SplTempFileObject());
+//
+//            $listAccount = $this->database->getReference('mst_translate_mean')->getValue();
+//            
+//            $csv->insertOne(['Username', 'Email']);
+//
+//            if ($listAccount) {
+//                foreach ($listAccount as $key => $value) {
+//                    $listAccountExport[$key] = array(
+//                        'acc_username' => $listAccount[$key]['acc_username'],
+//                        'acc_email' => $listAccount[$key]['acc_email'],
+//                    );
+//                }
+//            }
+//
+//            $csv->insertAll($listAccountExport);
+//            $csv->output($csvname);
+//            $error = false;
+//        }
+//        
+//        if ($data['mst_section']) {
+//            $csvname = "mst_section-" . date("Y-m-d") . ".csv";
+//            $csv = Writer::createFromFileObject(new SplTempFileObject());
+//
+//            $listAccount = $this->database->getReference('mst_section')->getValue();
+//            
+//            $csv->insertOne(['Username', 'Email']);
+//
+//            if ($listAccount) {
+//                foreach ($listAccount as $key => $value) {
+//                    $listAccountExport[$key] = array(
+//                        'acc_username' => $listAccount[$key]['acc_username'],
+//                        'acc_email' => $listAccount[$key]['acc_email'],
+//                    );
+//                }
+//            }
+//
+//            $csv->insertAll($listAccountExport);
+//            $csv->output($csvname);
+//            $error = false;
+//        }
+//        
+//        if ($data['mst_topic']) {
+//            $csvname = "mst_topic-" . date("Y-m-d") . ".csv";
+//            $csv = Writer::createFromFileObject(new SplTempFileObject());
+//
+//            $listAccount = $this->database->getReference('mst_topic')->getValue();
+//            
+//            $csv->insertOne(['Username', 'Email']);
+//
+//            if ($listAccount) {
+//                foreach ($listAccount as $key => $value) {
+//                    $listAccountExport[$key] = array(
+//                        'acc_username' => $listAccount[$key]['acc_username'],
+//                        'acc_email' => $listAccount[$key]['acc_email'],
+//                    );
+//                }
+//            }
+//
+//            $csv->insertAll($listAccountExport);
+//            $csv->output($csvname);
+//            $error = false;
+//        }
+        
         return response([
             'error' => $error,
-            'data' => $json,
-            'key' => $key
+//            'data' => '$json',
+//            'key' => $key
         ], 200);
     }
 

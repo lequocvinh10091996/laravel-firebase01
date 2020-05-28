@@ -45,6 +45,7 @@ Route::get('/terminology/index', function () {
 });
 
 Route::get('/topic', 'TopicController@index');
+Route::get('/topic/export', 'TopicController@export')->name('topicExport');
 Route::post('/topic', 'TopicController@store');
 Route::post('/topic/update', 'TopicController@update');
 Route::post('/topic/delete', 'TopicController@delete');

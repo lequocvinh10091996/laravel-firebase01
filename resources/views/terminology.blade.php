@@ -52,22 +52,6 @@
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
           <h5>List terminology</h5>
           <div style="float: right;margin: 8px; margin-right: 16px;">
-              <div class="btn-group">
-                  <div class="btn-group dropleft" role="group">
-                      <button type="button" class="btn btn-success">Setting</button>
-                      <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="icon icon-sort-down"></i>
-                      </button>
-                      <div class="dropdown-menu" style="min-width: 103px !important;">
-                          <li>
-                              <a href="{{ route('export') }}"><b style="font-size: 14px;">Export</b></a>
-                          </li>
-                          <li>
-                              <a><b>import</b></a>
-                          </li>
-                      </div>
-                  </div>
-              </div>
               <button type="button" id="btnThemMoi" class="btn btn-primary btn" ng-click="insertTerminology()">Insert</button>
           </div>
         </div>
@@ -257,6 +241,7 @@
               
               if(flag_ok == true){
                 var reData = $.param($scope.terminology);
+                console.log(reData);
                 $http.post(Url, reData,
                 {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
                 ).then(function (response){

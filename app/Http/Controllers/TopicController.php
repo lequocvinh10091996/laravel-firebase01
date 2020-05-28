@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use League\Csv\Writer;
+use SplTempFileObject;
 
 class TopicController extends BaseController
 {
@@ -94,5 +96,35 @@ class TopicController extends BaseController
         return response([
             'error' => false,
         ], 200);
+    }
+    
+    public function export($condition = null)
+    {
+        $csvname = "topic" . date("Y-m-d") . ".csv";
+        $csv = Writer::createFromFileObject(new SplTempFileObject());
+        $formatter = function (array $row): array {
+            foreach ($row as $key => $val) {
+                $row[$key] = mb_convert_encoding($val, "SJIS");
+            }
+            return $row;
+        };
+        
+        $listTopic = $this->database->getReference('mst_topic')->getValue();
+        
+//        $csv->addFormatter($formatter);
+        $csv->insertOne(['Topic vietnamese', 'Topic japanese', 'Topic description']);
+
+        if ($listTopic) {
+            foreach ($listTopic as $key => $value) {
+                $listTopicExport[$key] = array(
+                    'tp_vietnamese' => $listTopic[$key]['tp_vietnamese'],
+                    'tp_japanese' => $listTopic[$key]['tp_japanese'],
+                    'tp_description' => $listTopic[$key]['tp_description'],
+                );
+            }
+        } 
+
+        $csv->insertAll($listTopicExport);
+        $csv->output($csvname);
     }
 }

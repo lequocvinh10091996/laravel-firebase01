@@ -140,7 +140,7 @@ class TerminologyController extends BaseController
         $listSection = $this->database->getReference('mst_section')->getValue();
         
 //        $csv->addFormatter($formatter);
-        $csv->insertOne(['Section', 'Japanese', 'Higarana', 'Vietnamese', 'English', 'Example', 'User', 'Flag']);
+        $csv->insertOne(['Section', 'Japanese', 'Higarana', 'Vietnamese', 'English', 'Example', 'User']);
 
         if ($listTerminology) {
             foreach ($listTerminology as $key => $value) {
@@ -153,8 +153,7 @@ class TerminologyController extends BaseController
                         'tm_japanese_higarana' => $listTerminology[$key]['tm_japanese_higarana'],
                         'tm_vietnamese_translate' => $listTerminology[$key]['tm_vietnamese_translate'],
                         'tm_english_translate' => $listTerminology[$key]['tm_english_translate'],
-                        'tm_insert_user' => $listTerminology[$key]['tm_insert_user'],
-                        'tm_flag' => $listTerminology[$key]['tm_flag'],
+                        'tm_insert_user' => $listTerminology[$key]['tm_insert_user']
                     );
                     
                 }

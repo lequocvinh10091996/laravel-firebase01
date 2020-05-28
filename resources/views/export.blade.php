@@ -54,6 +54,10 @@
         </div>
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
+            <div class="control-group">
+                <span id="mgs_checkbox" generated="true" class="help-inline hidden">Not data to export ... </span>
+                <span id="mgs_export" generated="true" class="help-inline hidden">Export failed</span>
+            </div>
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
@@ -67,39 +71,44 @@
                         <td class="center" style="text-align: center; width: 2%;">1</td>
                         <td style="width: 40%;">Account</td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
+                            <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
+                            <input type="checkbox" name="mst_account" ng-model="exportCheck.mst_account">
                         </td>
                     </tr>
                     <tr>
                         <td class="center" style="text-align: center; width: 2%;">2</td>
                         <td style="width: 40%;">Terminology</td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
+                            <!--<a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
+                            <input type="checkbox" name="mst_translate_mean" ng-model="exportCheck.mst_translate_mean">
                         </td>
                     </tr>
                     <tr>
-                        <td class="center" style="text-align: center; width: 2%;">1</td>
+                        <td class="center" style="text-align: center; width: 2%;">3</td>
                         <td style="width: 40%;">Section</td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
+                            <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
+                            <input type="checkbox" name="mst_section" ng-model="exportCheck.mst_section">
                         </td>
                     </tr>
                     <tr>
-                        <td class="center" style="text-align: center; width: 2%;">1</td>
+                        <td class="center" style="text-align: center; width: 2%;">4</td>
                         <td style="width: 40%;">Topic</td>
                         <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                            <a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
+                            <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
+                            <input type="checkbox" name="mst_topic" ng-model="exportCheck.mst_topic">
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div><br>
+        <button type="button" class="btn btn-info" style="margin-left: 50%; width: 10%; margin-bottom: 10px;" ng-click="actionExport(null)">Export</button>
       <script >
-        appName.controller('TopicController', function($scope, $http, MainUrl) {
+        appName.controller('ExportController', function($scope, $http, MainUrl) {
           $scope.listTopic = [];
           $scope.currentPage = 1;
           $scope.pageSize = 50;
-          $scope.topic = {};
+          $scope.exportCheck = {};
           let map = new Map();
           
             $http.get(MainUrl+'/topic').then(function(response){
@@ -139,62 +148,35 @@
             }
             //end updateTopic
 
-            //actionSave insert|edit
-            $scope.actionSave = function(){
+            //actionExport
+            $scope.actionExport = function(){
               $('.loader').removeClass('hidden');
-              $('.control-group').removeClass('error');
-              $('#mgs_tp_vietnamese').addClass('hidden');
-              $('#mgs_tp_japanese').addClass('hidden');
-              $('.mgs_modal').addClass('hidden');
               var flag_ok = true;
-              var Url = MainUrl+'/topic';
-              if(map.get($scope.topic.index)){
-                Url += '/update';
-                $scope.topic.keyTopic = map.get($scope.topic.index);
-              }
-              if(angular.isUndefined($scope.topic.tp_vietnamese) &&
-                  angular.isUndefined($scope.topic.tp_japanese)) {
+              var Url = MainUrl+'/export';
+              if(angular.isUndefined($scope.exportCheck.mst_account) && 
+                      angular.isUndefined($scope.exportCheck.mst_translate_mean &&
+                      angular.isUndefined($scope.exportCheck.mst_section) &&
+                      angular.isUndefined($scope.exportCheck.mst_topic))) {
                     $('.control-group').addClass('error');
-                    $('#mgs_tp_vietnamese').removeClass('hidden');
-                    $('#mgs_tp_japanese').removeClass('hidden');
+                    $('#mgs_checkbox').removeClass('hidden');
+                    $('.loader').addClass('hidden');
                     flag_ok= false;
-              }else if(angular.isUndefined($scope.topic.tp_vietnamese)){
-                    $('#tp_vietnamese').parents('.control-group').addClass('error');
-                    $('#mgs_tp_vietnamese').removeClass('hidden');
-                    flag_ok= false;
-              } else if(angular.isUndefined($scope.topic.tp_japanese)){
-                    $('#tp_japanese').parents('.control-group').addClass('error');
-                    $('#mgs_tp_japanese').removeClass('hidden');
-                    flag_ok= false;
+              } else{
+                    $('.control-group').removeClass('error');
+                    $('#mgs_checkbox').addClass('hidden');
               }
-              if(flag_ok == false){
-                  $('.loader').addClass('hidden');
-              }
-              
               if(flag_ok == true){
-                var reData = $.param($scope.topic);
-                $http.post(Url, reData,
-                {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
-                ).then(function (response){
-                  $('.loader').addClass('hidden');
-                  if(response.data.error == true) {
-                    $('#mgs_modal').html(response.data.data);
-                    $('.mgs_modal').removeClass('hidden');
-                  } else if(response.data.error == false) {
-                    $('#myModal').modal('hide');
-                    rowNew = $.parseJSON(response.data.data);
-                    if(map.get($scope.topic.index)){
-                      $scope.listTopic[$scope.topic.index] = rowNew;
-                      alertify.set('notifier', 'position', 'top-center');
-                      alertify.success('Update row complete.');
-                    } else{
-                      alertify.set('notifier', 'position', 'top-center');
-                      alertify.success('Insert row complete.');
-                      $scope.listTopic.push(rowNew);
-                      map.set($scope.listTopic.length-1, response.data.key);
-                    }
-                  }
-                });
+                var reData = $.param($scope.exportCheck);
+                console.log(reData);
+                $http({
+                url : MainUrl+'/terminology/export',
+                method : 'GET',
+                transformResponse: [
+                function (data) {
+                FileSaver.saveAs(data, 'export.csv');
+                }
+                ]
+                })
               }
             }
             //end actionSave
