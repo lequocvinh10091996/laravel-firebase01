@@ -88,7 +88,7 @@
                       <a href="{{ url('/export/index') }}"><b style="font-size: 14px;">Export</b></a>
                   </li>
                   <li>
-                      <a href=""><b style="font-size: 14px;">Import</b></a>
+                      <a href="{{ url('/import/index') }}"><b style="font-size: 14px;">Import</b></a>
                   </li>
               </ul>
           </div>
@@ -99,6 +99,9 @@
 <!--sidebar-menu-->
 <div id="sidebar">
     <ul>
+        <li class="@if($controllername == 'SearchController' ){{'active'}}@endif">
+            <a href="{{ url('/search/index') }}"><i class="icon icon-search"></i> <span>Search</span></a>
+        </li>
         <li class="@if($controllername == 'AccountController' ){{'active'}}@endif">
             <a href="{{ url('/account/index') }}"><i class="icon icon-home"></i> <span>Account</span></a> 
         </li>

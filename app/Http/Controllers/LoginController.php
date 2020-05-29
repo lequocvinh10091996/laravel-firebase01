@@ -33,7 +33,7 @@ class LoginController extends BaseController {
             }
         }
         if ($successlogin) {
-            return redirect('/account/index');
+            return redirect('/search/index');
         } else {
             return back()->with('error', 'Wrong Login Details');
         }

@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('title', 'Setting')
-@section('title-current', 'Export CSV')
+@section('title-current', 'Import CSV')
 @section('content')
         <style>
             .pagination {
@@ -48,9 +48,23 @@
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
             }
+            div.uploader {
+                width: 60%;
+            }
+            /* custom css upload file */
+            div.uploader span.action {
+                width: 10%;
+            }
+            div.uploader span.filename {
+                width: 53%;
+            }
+            div.uploader input {
+                width: 10%;
+                margin-right: 34%;
+            }
         </style>
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
-            <h5>Export CSV</h5>
+            <h5>Import CSV</h5>
         </div>
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
@@ -62,7 +76,7 @@
                 </div>
                 @endif
             </div>
-            <form action="{{ route('export') }}">
+            <form action="{{ route('import') }}">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -74,43 +88,39 @@
                     <tbody>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">1</td>
-                            <td style="width: 40%;">Account</td>
-                            <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
-                                <input type="checkbox" name="mst_account" ng-model="exportCheck.mst_account">
+                            <td>Account</td>
+                            <td class="center" style="text-align: center; width: 80%;white-space: nowrap;">
+                                <input type="file" name="mst_account" ng-model="exportCheck.mst_account">
                             </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">2</td>
-                            <td style="width: 40%;">Terminology</td>
+                            <td>Terminology</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
-                                <input type="checkbox" name="mst_translate_mean" ng-model="exportCheck.mst_translate_mean">
+                                <input type="file" name="mst_translate_mean" ng-model="exportCheck.mst_translate_mean">
                             </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">3</td>
-                            <td style="width: 40%;">Section</td>
+                            <td>Section</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
-                                <input type="checkbox" name="mst_section" ng-model="exportCheck.mst_section">
+                                <input type="file" name="mst_section" ng-model="exportCheck.mst_section">
                             </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">4</td>
-                            <td style="width: 40%;">Topic</td>
+                            <td>Topic</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
-                                <input type="checkbox" name="mst_topic" ng-model="exportCheck.mst_topic">
+                                <input type="file" name="mst_topic" ng-model="exportCheck.mst_topic">
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 </div><br>
-                <button type="submit" class="btn btn-info" style="margin-left: 50%; width: 10%; margin-bottom: 10px;" ng-click="actionExport(null)">Export</button>
+                <button type="submit" class="btn btn-info" style="margin-left: 50%; width: 10%; margin-bottom: 10px;" ng-click="actionImport(null)">Import</button>
             </form>
 <script >
-        appName.controller('ExportController', function($scope, $http, MainUrl) {
+        appName.controller('ImportController', function($scope, $http, MainUrl) {
             $scope.exportCheck = {};
         });
 </script>

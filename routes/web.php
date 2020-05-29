@@ -54,11 +54,22 @@ Route::get('/topic/index', function () {
     return view('topic', ['controllername' => 'TopicController']);
 });
 
-Route::get('/export', 'ExportController@index');
-Route::post('/export', 'ExportController@store');
-Route::post('/export/update', 'ExportController@update');
-Route::post('/export/delete', 'ExportController@delete');
+Route::get('/search', 'SearchController@index');
+Route::post('/search', 'SearchController@store');
+Route::post('/search/update', 'SearchController@update');
+Route::post('/search/delete', 'SearchController@delete');
 
+Route::get('/search/index', function () {
+    return view('search', ['controllername' => 'SearchController']);
+});
+
+
+Route::get('/export/export', 'ExportController@export')->name('export');
 Route::get('/export/index', function () {
     return view('export', ['controllername' => 'ExportController']);
+});
+
+Route::get('/import/import', 'ImportController@import')->name('import');
+Route::get('/import/index', function () {
+    return view('import', ['controllername' => 'ImportController']);
 });

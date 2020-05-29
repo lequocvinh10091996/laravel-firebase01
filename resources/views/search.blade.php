@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
-@section('title', 'Setting')
-@section('title-current', 'Export CSV')
+@section('title', 'Search')
+@section('title-current', 'Search')
 @section('content')
         <style>
             .pagination {
