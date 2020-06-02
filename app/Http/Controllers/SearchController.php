@@ -10,137 +10,92 @@ use League\Csv\CharsetConverter;
 use ZipArchive;
 use Illuminate\View\View;
 
-class ExportController extends BaseController
+class SearchController extends BaseController
 {
     public function index() {
+        $jsonTopic = array();
+        $listTopic = $this->database->getReference('mst_topic')->getValue();
+
+        if ($listTopic) {
+            foreach($listTopic as $key => $value){
+                $listTopic[$key]['tp_key'] = $key;
+            }
+            $jsonTopic = json_encode($listTopic);
+        }
         
+        $jsonTerminology = array();
+        $listTerminology = $this->database->getReference('mst_translate_mean')->getValue();
+
+        if ($listTerminology) {
+            $jsonTerminology = json_encode($listTerminology);
+        }
+        return response([
+            'error' => false,
+            'data' => compact('listTopic', $jsonTopic, 'listTerminology', $jsonTerminology)
+        ], 200);
     }
 
-    public function export(Request $request) {
+    public function store(Request $request) {
+        $listSectionQuery = array();
+        $listTerminologyQuery = array();
         $error = true;
-        $zipname = 'export_data_web_dictionary'.date("Y-m-d").'.zip';
-        $zip = new ZipArchive();
-        $zip->open($zipname, ZipArchive::CREATE);
-        $data = array(
-            'mst_account' => $request->mst_account,
-            'mst_translate_mean' => $request->mst_translate_mean,
-            'mst_section' => $request->mst_section,
-            'mst_topic' => $request->mst_topic,
-        );
-        if ($data['mst_account']) {
-            $csvname = "mst_account_" . date("Y-m-d") . ".csv";
-            $csv = Writer::createFromFileObject(new SplTempFileObject());
-
-            $listAccount = $this->database->getReference('mst_account')->getValue();
-            
-            $csv->insertOne(['Username', 'Email']);
-
-            if ($listAccount) {
-                foreach ($listAccount as $key => $value) {
-                    $listAccountExport[$key] = array(
-                        'acc_username' => $listAccount[$key]['acc_username'],
-                        'acc_email' => $listAccount[$key]['acc_email'],
-                    );
+        $json = "";
+        if (!empty($request->topicData)) {
+            $listSection = $this->database->getReference('mst_section')->getValue();
+            foreach ($listSection as $key => $value) {
+                if (in_array($value['tp_id'], $request->topicData)) {
+                    $listSectionQuery[] = $key;
                 }
             }
-
-            $csv->insertAll($listAccountExport);
-            $zip->addFromString($csvname, $csv->getContent());
-            $error = false;
-        }
-        
-        if ($data['mst_translate_mean']) {
-            $csvname = "terminology_" . date("Y-m-d") . ".csv";
-            $csv = Writer::createFromFileObject(new SplTempFileObject());
-
-            $listTerminology = $this->database->getReference('mst_translate_mean')->getValue();
-            $listSection = $this->database->getReference('mst_section')->getValue();
-            $csv->insertOne(['Section', 'Japanese', 'Higarana', 'Vietnamese', 'English', 'Example', 'User']);
-            
-            if ($listTerminology) {
+            if (!empty($listSectionQuery)) {
+                $listTerminology = $this->database->getReference('mst_translate_mean')->getValue();
                 foreach ($listTerminology as $key => $value) {
-                    if (isset($listSection[$value['sec_id']])) {
-                        $listTerminology[$key]['sec_vietnamese'] = $listSection[$value['sec_id']]['sec_vietnamese'];
-                        unset($listTerminology[$key]['sec_id']);
-                        $listTerminologyExport[$key] = array(
-                            'sec_vietnamese' => $listTerminology[$key]['sec_vietnamese'],
-                            'tm_japanese_translate' => $listTerminology[$key]['tm_japanese_translate'],
-                            'tm_japanese_higarana' => $listTerminology[$key]['tm_japanese_higarana'],
-                            'tm_vietnamese_translate' => $listTerminology[$key]['tm_vietnamese_translate'],
-                            'tm_english_translate' => $listTerminology[$key]['tm_english_translate'],
-                            'tm_example' => $listTerminology[$key]['tm_example'],
-                            'tm_insert_user' => $listTerminology[$key]['tm_insert_user']
-                        );
+                    if (in_array($value['sec_id'], $listSectionQuery)) {
+                        $listTerminologyQuery[] = $value;
                     }
                 }
-            }
+            }//print_r($listTerminologyQuery);die;
+        }
 
-            $csv->insertAll($listTerminologyExport);
-//            $csv->output($csvname);
-            $zip->addFromString($csvname, $csv->getContent());
+//        foreach($listSection as $key){
+//            $listSection[] = $this->database->getReference('mst_translate_mean/' . $key)->getValue();
+//        }
+//        $error = true;
+//        $json = null;
+//        $key = null;
+//        $data = array(
+//            'sec_id' => $request->sec_id,
+//            'tm_english_translate' => "$request->tm_english_translate",
+//            'tm_japanese_translate' => $request->tm_japanese_translate,
+//            'tm_japanese_higarana' => $request->tm_japanese_higarana,
+//            'tm_vietnamese_translate' => $request->tm_vietnamese_translate,
+//            'tm_example' => $request->tm_example,
+//            'tm_insert_user' => session('acc_username'),
+//            'tm_flag' => 1,
+//        );
+//        //insert
+//        $terminologyId = $this->database->getReference('mst_translate_mean')->push($data)->getKey();
+//        //get data
+//        if ($terminologyId) {
+//            $currentTerminology = $this->database->getReference('mst_translate_mean/' . $terminologyId)->getValue();
+//            //get name of id in config type
+//            $listSection = $this->database->getReference('mst_section')->getValue();
+//            if (isset($listSection[$data['sec_id']])) {
+//                $currentTerminology['sec_vietnamese'] = $listSection[$data['sec_id']]['sec_vietnamese'];
+//            }
+//            
+//            $error = false;
+//            $json = json_encode($currentTerminology);
+//            $key = $terminologyId;
+//        }
+        if(!empty($listTerminologyQuery)){
             $error = false;
+            $json = json_encode($listTerminologyQuery);
+//            print_r($json);die;
         }
-        
-        if ($data['mst_section']) {
-            $csvname = "section_" . date("Y-m-d") . ".csv";
-            $csv = Writer::createFromFileObject(new SplTempFileObject());
-
-            $listSection = $this->database->getReference('mst_section')->getValue();
-            $listTopic = $this->database->getReference('mst_topic')->getValue();
-            $csv->insertOne(['Topic', 'Section vietnamese', 'Section japanese', 'Section description']);
-
-            if ($listSection) {
-                foreach ($listSection as $key => $value) {
-                    if (isset($listTopic[$value['tp_id']])) {
-                        $listSection[$key]['tp_vietnamese'] = $listTopic[$value['tp_id']]['tp_vietnamese'];
-                        $listSectionExport[$key] = array(
-                            'tp_vietnamese' => $listSection[$key]['tp_vietnamese'],
-                            'sec_vietnamese' => $listSection[$key]['sec_vietnamese'],
-                            'sec_japanese' => $listSection[$key]['sec_japanese'],
-                            'sec_description' => $listSection[$key]['sec_description'],
-                        );
-                    }
-                }
-            }
-            $csv->insertAll($listSectionExport);
-            $zip->addFromString($csvname, $csv->getContent());
-            $error = false;
-        }
-        
-        if ($data['mst_topic']) {
-            $csvname = "topic_" . date("Y-m-d") . ".csv";
-            $csv = Writer::createFromFileObject(new SplTempFileObject());
-
-            $listTopic = $this->database->getReference('mst_topic')->getValue();
-            $csv->insertOne(['Topic vietnamese', 'Topic japanese', 'Topic description']);
-
-            if ($listTopic) {
-                foreach ($listTopic as $key => $value) {
-                    $listTopicExport[$key] = array(
-                        'tp_vietnamese' => $listTopic[$key]['tp_vietnamese'],
-                        'tp_japanese' => $listTopic[$key]['tp_japanese'],
-                        'tp_description' => $listTopic[$key]['tp_description'],
-                    );
-                }
-            }
-            $csv->insertAll($listTopicExport);
-            $zip->addFromString($csvname, $csv->getContent());
-            $error = false;
-        }
-
-        if ($error) {
-            return back()->with('error', 'Export failed, check data to export !');
-        } else {
-            $zip->close();
-
-            header('Content-Type: application/zip');
-            header('Content-disposition: attachment; filename=' . $zipname);
-            header('Content-Length: ' . filesize($zipname));
-            readfile($zipname);
-
-            // remove the zip archive
-            // you could also use the temp file method above for this.
-            unlink($zipname);
-        }
+        return response([
+            'error' => $error,
+            'data' => $json,
+        ], 200);
     }
 }

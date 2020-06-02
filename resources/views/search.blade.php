@@ -29,13 +29,17 @@
                 border: 1px solid #ddd;
             }
             .loader {
-                border: 5px solid #f3f3f3;
+                border: 7px solid #f3f3f3;
                 border-radius: 69%;
-                border-top: 5px solid #3498db;
-                width: 21px;
-                height: 18px;
+                border-top: 7px solid #3498db;
+                width: 50px;
+                height: 50px;
                 -webkit-animation: spin 2s linear infinite;
                 animation: spin 2s linear infinite;
+                position: fixed;
+                background: rgba(255, 255, 255, 0.6);
+		top: 40%;
+		left: 50%;
             }
 
               /* Safari */
@@ -48,9 +52,16 @@
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
             }
+            
+            div.checker input {
+                opacity: 1 !important;
+                margin-top: -4px;
+                margin-left: 2px;
+            }
         </style>
+        <div class="loader hidden"></div>
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
-            <h5>Export CSV</h5>
+            <h5>Search</h5>
         </div>
         <div class="widget-content nopadding" >
             <span id="listMessage"></span>
@@ -62,56 +73,260 @@
                 </div>
                 @endif
             </div>
-            <form action="{{ route('export') }}">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Name data</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="center" style="text-align: center; width: 2%;">1</td>
-                            <td style="width: 40%;">Account</td>
-                            <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
-                                <input type="checkbox" name="mst_account" ng-model="exportCheck.mst_account">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="center" style="text-align: center; width: 2%;">2</td>
-                            <td style="width: 40%;">Terminology</td>
-                            <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
-                                <input type="checkbox" name="mst_translate_mean" ng-model="exportCheck.mst_translate_mean">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="center" style="text-align: center; width: 2%;">3</td>
-                            <td style="width: 40%;">Section</td>
-                            <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
-                                <input type="checkbox" name="mst_section" ng-model="exportCheck.mst_section">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="center" style="text-align: center; width: 2%;">4</td>
-                            <td style="width: 40%;">Topic</td>
-                            <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
-                                <input type="checkbox" name="mst_topic" ng-model="exportCheck.mst_topic">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                </div><br>
-                <button type="submit" class="btn btn-info" style="margin-left: 50%; width: 10%; margin-bottom: 10px;" ng-click="actionExport(null)">Export</button>
-            </form>
-<script >
-        appName.controller('ExportController', function($scope, $http, MainUrl) {
-            $scope.exportCheck = {};
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <td colspan="5" style="text-align: center;">
+                            <select id="searchAll" style="width: 7% !important;">
+                                <option>Search by</option>
+                                <option>JA-VI</option>
+                                <option>VI-JA</option>
+                            </select>
+                            <input ng-model="search" class="form-control search" type="text" placeholder="Search" aria-label="Search" style="width: 25%;">
+                            <button type="submit" class="btn btn-info" style="margin-bottom: 10px;" ng-click="actionSearch(null)">Search</button>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="width: 15%;"></th>
+                        <th style="text-align: center;" ng-repeat="topic in listTopic">
+                            <b><p style="color: red;"><input type="checkbox" ng-click="checkSearch(topic.tp_key)" id="<% topic.tp_key %>"> <%topic.tp_vietnamese%></p></b>
+                        </th>
+                    </tr>
+                </thead>
+            </table><br>
+            <ul class="thumbnails">
+                <li class="span4">
+                    <b><p style="color: red;">Kết quả</p></b>
+                </li>
+                <li class="span8">
+                    <b><p style="color: red;">Chi tiết</p></b>
+                </li>
+            </ul>
+            <ul class="thumbnails" dir-paginate="terminology in listTerminology | filter: filterOnLocation | itemsPerPage: pageSize" current-page="currentPage">
+                <li class="span4">
+                    <div class="thumbnail" style="border: 1px solid #3db7f0; background-color: white;">
+                        <p style="color: red;"><% terminology.tm_japanese_translate %></p>
+                        <p><% terminology.tm_japanese_higarana %></p>
+                        <p style="color: #3498db;"><% terminology.tm_vietnamese_translate %></p>
+                    </div>
+                </li>
+                <li class="span8">
+                    <div class="thumbnail" style="background-color: white;">
+                        <p style="color: red;"><% terminology.tm_japanese_translate %></p>
+                        <p><% terminology.tm_japanese_higarana %></p>
+                        <p><% terminology.tm_vietnamese_translate %></p>
+                        <p><% terminology.tm_english_translate %></p>
+                        <p><% terminology.tm_english_translate %></p><br>
+                        <p>Người tạo: <% terminology.tm_insert_user %></p>
+                    </div>
+                </li>
+            </ul>
+        </div><br>
+        <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" >
+        </dir-pagination-controls>
+<script>
+        appName.controller('SearchController', function($scope, $http, MainUrl) {
+            $scope.listTopic = [];
+            $scope.listTerminology = [];
+            $scope.listTerminologyBackup = [];
+            $scope.currentPage = 1;
+            $scope.pageSize = 50;
+            $scope.topicData = [];
+            $scope.reData = {};
+            
+            
+//            $(".search").keydown(function(){
+//                if($("#searchAll" ).val() == "Search by"){
+//                    $scope.filterOnLocation = $scope.search;
+//                    console.log($scope.search);
+//                } else if($("#searchAll" ).val() == "VI-JA") {
+//                    $scope.filterOnLocation = '{tm_japanese_translate:'+ $scope.search+ '}';
+//                }
+//            });
+            $( "#searchAll" ).click(function() {
+                $(".search").val("");
+                $scope.search = "";
+//                if ($("#searchAll" ).val() == "Search by") {
+//                    $scope.filterOnLocation = $scope.search;
+//                } else if ($("#searchAll" ).val() == "JA-VI") {
+//                    $scope.filterOnLocation = function(terminology) {
+//                          return (terminology.tm_japanese_translate + terminology.tm_japanese_higarana).indexOf($scope.search) >= 0;
+//                    }; 
+//                } else if ($("#searchAll" ).val() == "VI-JA") {
+//                    $(".search").keydown(function(){
+//                      $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
+//                    });
+//                }
+            });
+            
+            let mapTopic = new Map();
+            $http.get(MainUrl+'/search').then(function(response){
+              dataTopic = response.data.data.listTopic;
+              if(dataTopic){
+                  var index = 0;
+                  $.each(dataTopic, function( key, value ) {
+                    $scope.listTopic.push(value);
+                    mapTopic.set(index, key);
+                    index++;
+                  });
+              }
+              
+//              let mapTerminology = new Map();
+//              dataTerminology = response.data.data.listTerminology;
+//              if(dataTerminology){
+//                  var index = 0;
+//                  $.each(dataTerminology, function( key, value ) {
+//                    $scope.listTerminology.push(value);
+//                    mapTerminology.set(index, key);
+//                    index++;
+//                  });
+//                  $scope.listTerminologyBackup = $scope.listTerminology;
+//              }
+                dataTerminology = response.data.data.listTerminology;
+                if(dataTerminology){
+                    $.each(dataTerminology, function( key, value ) {
+                      $scope.listTerminologyBackup.push(value);
+                    });
+                }
+            });
+            
+            $scope.checkSearch = function(topKey)
+            {
+                if($('#'+topKey).is(":checked")){
+                    $scope.topicData.push(topKey);
+                } else {
+                    var indexCheckForDete = $scope.topicData.indexOf(topKey);
+                    $scope.topicData.splice(indexCheckForDete, 1);
+                }
+                var Url = MainUrl+'/search';
+                $scope.reData.topicData = $scope.topicData;
+                var reData = $.param($scope.reData);
+                $http.post(Url, reData,
+                {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
+                ).then(function (response){
+                  $('.loader').addClass('hidden');
+                  if(response.data.error == true) {
+                    $scope.listTerminology = $scope.listTerminologyBackup;
+                  } else if(response.data.error == false) {
+//                    $('#myModal').modal('hide');
+                    rowNew = $.parseJSON(response.data.data);
+//                    if(map.get($scope.terminology.index)){
+//                      $scope.listTerminology[$scope.terminology.index] = rowNew;
+//                      alertify.set('notifier', 'position', 'top-center');
+//                      alertify.success('Update row complete.');
+//                    } else{
+//                      alertify.set('notifier', 'position', 'top-center');
+//                      alertify.success('Insert row complete.');
+                      $scope.listTerminology = [];
+                      $.each(rowNew, function( key, value ) {
+                        $scope.listTerminology.push(value);
+                      });
+//                      $scope.listTerminology.push(rowNew);
+//                      map.set($scope.listTerminology.length-1, response.data.key);
+//                    }
+                  }
+                });
+            }
+            
+            $scope.actionSearch = function()
+            {
+                if(!angular.isUndefined($scope.search) && $scope.search != ""){
+                    $('.loader').removeClass('hidden');
+                    $scope.listTerminology = $scope.listTerminologyBackup;
+
+                    if ($("#searchAll" ).val() == "Search by") {
+                        $scope.filterOnLocation = $scope.search;
+                    } else if ($("#searchAll" ).val() == "JA-VI") {
+                        $scope.filterOnLocation = function(terminology) {
+                              return (terminology.tm_japanese_translate + terminology.tm_japanese_higarana).indexOf($scope.search) >= 0;
+                        };
+//                        $scope.filterOnLocation = {tm_japanese_translate: $scope.search, tm_japanese_higarana: $scope.search};
+                    } else if ($("#searchAll" ).val() == "VI-JA") {
+                        $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
+                    }
+                    setTimeout(function(){
+                        $('.loader').addClass('hidden');
+                    }, 500);   
+                }
+            }
+            
+            $scope.actionSave = function(){
+              $('.control-group').removeClass('error');
+              $('#mgs_sec_id').addClass('hidden');
+              $('#mgs_tm_japanese_translate').addClass('hidden');
+              $('#mgs_tm_japanese_higarana').addClass('hidden');
+              $('#mgs_tm_vietnamese_translate').addClass('hidden');
+              $('.mgs_modal').addClass('hidden');
+              $('.loader').removeClass('hidden');
+              var flag_ok = true;
+              var Url = MainUrl+'/terminology';
+              if(map.get($scope.terminology.index)){
+                Url += '/update';
+                $scope.terminology.keyTerminology = map.get($scope.terminology.index);
+              }
+              if((angular.isUndefined($scope.terminology.sec_id) &&
+                  angular.isUndefined($scope.terminology.tm_japanese_translate) &&
+                  angular.isUndefined($scope.terminology.tm_japanese_higarana) &&
+                  angular.isUndefined($scope.terminology.tm_vietnamese_translate))) {
+                    $('.control-group').addClass('error');
+                    $('#tm_english_translate').parents('.control-group').removeClass('error');
+                    $('#mgs_sec_id').removeClass('hidden');
+                    $('#mgs_tm_japanese_translate').removeClass('hidden');
+                    $('#mgs_tm_japanese_higarana').removeClass('hidden');
+                    $('#mgs_tm_vietnamese_translate').removeClass('hidden');
+                    flag_ok= false;
+              } else if(angular.isUndefined($scope.terminology.sec_id)){
+                $('#sec_id').parents('.control-group').addClass('error');
+                $('#mgs_sec_id').removeClass('hidden');
+                flag_ok= false;
+              } else if(angular.isUndefined($scope.terminology.tm_japanese_translate)){
+                $('#tm_japanese_translate').parents('.control-group').addClass('error');
+                $('#mgs_tm_japanese_translate').removeClass('hidden');
+                flag_ok= false;
+              } else if(angular.isUndefined($scope.terminology.tm_japanese_higarana)){
+                $('#tm_japanese_higarana').parents('.control-group').addClass('error');
+                $('#mgs_tm_japanese_higarana').removeClass('hidden');
+                flag_ok= false;
+              } else if(angular.isUndefined($scope.terminology.tm_vietnamese_translate)){
+                $('#tm_vietnamese_translate').parents('.control-group').addClass('error');
+                $('#mgs_tm_vietnamese_translate').removeClass('hidden');
+                flag_ok= false;
+              }
+              
+              if(flag_ok == false){
+                  $('.loader').addClass('hidden');
+              }
+              
+              if(flag_ok == true){
+                var reData = $.param($scope.terminology);
+                $http.post(Url, reData,
+                {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
+                ).then(function (response){
+                  $('.loader').addClass('hidden');
+                  if(response.data.error == true) {
+                    $('#mgs_modal').html(response.data.data);
+                    $('.mgs_modal').removeClass('hidden');
+                  } else if(response.data.error == false) {
+                    $('#myModal').modal('hide');
+                    rowNew = $.parseJSON(response.data.data);
+                    if(map.get($scope.terminology.index)){
+                      $scope.listTerminology[$scope.terminology.index] = rowNew;
+                      alertify.set('notifier', 'position', 'top-center');
+                      alertify.success('Update row complete.');
+                    } else{
+                      alertify.set('notifier', 'position', 'top-center');
+                      alertify.success('Insert row complete.');
+                      $scope.listTerminology.push(rowNew);
+                      map.set($scope.listTerminology.length-1, response.data.key);
+                    }
+                  }
+                });
+              }
+            }
         });
 </script>
 
