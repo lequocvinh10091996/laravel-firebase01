@@ -55,7 +55,7 @@ Route::get('/topic/index', function () {
 });
 
 Route::get('/search', 'SearchController@index');
-Route::post('/search', 'SearchController@store');
+Route::post('/search', 'SearchController@query');
 Route::post('/search/update', 'SearchController@update');
 Route::post('/search/delete', 'SearchController@delete');
 

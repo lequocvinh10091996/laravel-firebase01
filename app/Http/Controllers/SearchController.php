@@ -35,63 +35,46 @@ class SearchController extends BaseController
         ], 200);
     }
 
-    public function store(Request $request) {
+    public function query (Request $request) {
         $listSectionQuery = array();
         $listTerminologyQuery = array();
         $error = true;
         $json = "";
         if (!empty($request->topicData)) {
-            $listSection = $this->database->getReference('mst_section')->getValue();
-            foreach ($listSection as $key => $value) {
-                if (in_array($value['tp_id'], $request->topicData)) {
-                    $listSectionQuery[] = $key;
+            $error = false;
+//            $listSection = $this->database->getReference('mst_section')->getValue();
+//            foreach ($listSection as $key => $value) {
+//                if (in_array($value['tp_id'], $request->topicData)) {
+//                    $listSectionQuery[] = $key;
+//                }
+//            }
+            
+            foreach ($request->topicData as $topic){
+                $listSectionQuery[] = $this->database->getReference('mst_section')
+                // order the reference's children by the values in the field 'height'
+                ->orderByChild('tp_id')
+                // returns all persons being exactly 
+                ->equalTo($topic)
+                ->getValue();
+            }
+            
+            foreach( $listSectionQuery as $keys => $values){
+                foreach(array_keys($values) as $key => $value){
+                    $listSectionKey[] = $value;
                 }
             }
-            if (!empty($listSectionQuery)) {
+            
+            if (!empty($listSectionKey)) {
                 $listTerminology = $this->database->getReference('mst_translate_mean')->getValue();
                 foreach ($listTerminology as $key => $value) {
                     if (in_array($value['sec_id'], $listSectionQuery)) {
                         $listTerminologyQuery[] = $value;
                     }
                 }
-            }//print_r($listTerminologyQuery);die;
+            }
         }
-
-//        foreach($listSection as $key){
-//            $listSection[] = $this->database->getReference('mst_translate_mean/' . $key)->getValue();
-//        }
-//        $error = true;
-//        $json = null;
-//        $key = null;
-//        $data = array(
-//            'sec_id' => $request->sec_id,
-//            'tm_english_translate' => "$request->tm_english_translate",
-//            'tm_japanese_translate' => $request->tm_japanese_translate,
-//            'tm_japanese_higarana' => $request->tm_japanese_higarana,
-//            'tm_vietnamese_translate' => $request->tm_vietnamese_translate,
-//            'tm_example' => $request->tm_example,
-//            'tm_insert_user' => session('acc_username'),
-//            'tm_flag' => 1,
-//        );
-//        //insert
-//        $terminologyId = $this->database->getReference('mst_translate_mean')->push($data)->getKey();
-//        //get data
-//        if ($terminologyId) {
-//            $currentTerminology = $this->database->getReference('mst_translate_mean/' . $terminologyId)->getValue();
-//            //get name of id in config type
-//            $listSection = $this->database->getReference('mst_section')->getValue();
-//            if (isset($listSection[$data['sec_id']])) {
-//                $currentTerminology['sec_vietnamese'] = $listSection[$data['sec_id']]['sec_vietnamese'];
-//            }
-//            
-//            $error = false;
-//            $json = json_encode($currentTerminology);
-//            $key = $terminologyId;
-//        }
         if(!empty($listTerminologyQuery)){
-            $error = false;
             $json = json_encode($listTerminologyQuery);
-//            print_r($json);die;
         }
         return response([
             'error' => $error,

@@ -40,6 +40,7 @@
                 background: rgba(255, 255, 255, 0.6);
 		top: 40%;
 		left: 50%;
+                z-index: 9999;
             }
 
               /* Safari */
@@ -106,7 +107,7 @@
                     <b><p style="color: red;">Chi tiết</p></b>
                 </li>
             </ul>
-            <ul class="thumbnails" dir-paginate="terminology in listTerminology | filter: filterOnLocation | itemsPerPage: pageSize" current-page="currentPage">
+            <ul class="thumbnails" dir-paginate="terminology in listTerminology | filter: filterOnLocation  | itemsPerPage: pageSize" current-page="currentPage">
                 <li class="span4">
                     <div class="thumbnail" style="border: 1px solid #3db7f0; background-color: white;">
                         <p style="color: red;"><% terminology.tm_japanese_translate %></p>
@@ -139,14 +140,11 @@
             $scope.reData = {};
             
             
-//            $(".search").keydown(function(){
-//                if($("#searchAll" ).val() == "Search by"){
-//                    $scope.filterOnLocation = $scope.search;
-//                    console.log($scope.search);
-//                } else if($("#searchAll" ).val() == "VI-JA") {
-//                    $scope.filterOnLocation = '{tm_japanese_translate:'+ $scope.search+ '}';
-//                }
-//            });
+            $(".search").keydown(function(){
+                if($("#searchAll" ).val() == "JA-VI"){
+                    $scope.listTerminology = [];
+                }
+            });
             $( "#searchAll" ).click(function() {
                 $(".search").val("");
                 $scope.search = "";
@@ -202,55 +200,55 @@
                     var indexCheckForDete = $scope.topicData.indexOf(topKey);
                     $scope.topicData.splice(indexCheckForDete, 1);
                 }
-                var Url = MainUrl+'/search';
-                $scope.reData.topicData = $scope.topicData;
-                var reData = $.param($scope.reData);
-                $http.post(Url, reData,
-                {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
-                ).then(function (response){
-                  $('.loader').addClass('hidden');
-                  if(response.data.error == true) {
-                    $scope.listTerminology = $scope.listTerminologyBackup;
-                  } else if(response.data.error == false) {
-//                    $('#myModal').modal('hide');
-                    rowNew = $.parseJSON(response.data.data);
-//                    if(map.get($scope.terminology.index)){
-//                      $scope.listTerminology[$scope.terminology.index] = rowNew;
-//                      alertify.set('notifier', 'position', 'top-center');
-//                      alertify.success('Update row complete.');
-//                    } else{
-//                      alertify.set('notifier', 'position', 'top-center');
-//                      alertify.success('Insert row complete.');
-                      $scope.listTerminology = [];
-                      $.each(rowNew, function( key, value ) {
-                        $scope.listTerminology.push(value);
-                      });
-//                      $scope.listTerminology.push(rowNew);
-//                      map.set($scope.listTerminology.length-1, response.data.key);
-//                    }
-                  }
-                });
             }
             
             $scope.actionSearch = function()
             {
                 if(!angular.isUndefined($scope.search) && $scope.search != ""){
                     $('.loader').removeClass('hidden');
-                    $scope.listTerminology = $scope.listTerminologyBackup;
-
-                    if ($("#searchAll" ).val() == "Search by") {
-                        $scope.filterOnLocation = $scope.search;
-                    } else if ($("#searchAll" ).val() == "JA-VI") {
-                        $scope.filterOnLocation = function(terminology) {
-                              return (terminology.tm_japanese_translate + terminology.tm_japanese_higarana).indexOf($scope.search) >= 0;
-                        };
-//                        $scope.filterOnLocation = {tm_japanese_translate: $scope.search, tm_japanese_higarana: $scope.search};
-                    } else if ($("#searchAll" ).val() == "VI-JA") {
-                        $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
-                    }
-                    setTimeout(function(){
-                        $('.loader').addClass('hidden');
-                    }, 500);   
+                    //xu ly checkbox
+                    var Url = MainUrl+'/search';
+                    $scope.reData.topicData = $scope.topicData;
+                    var reData = $.param($scope.reData);
+                    $http.post(Url, reData,
+                    {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
+                    ).then(function (response){
+                      $('.loader').addClass('hidden');
+                      if(response.data.error == true) {
+                            $('.loader').addClass('hidden');
+                            $scope.listTerminology = $scope.listTerminologyBackup;
+                            if ($("#searchAll" ).val() == "Search by") {
+                                $scope.filterOnLocation = $scope.search;
+                            } else if ($("#searchAll" ).val() == "JA-VI") {
+                                $scope.filterOnLocation =  function(terminology) {
+                                      return terminology.tm_japanese_translate.toString().indexOf($scope.search) > -1 || terminology.tm_japanese_higarana.toString().indexOf($scope.search) > -1;
+                                };
+                            } else if ($("#searchAll" ).val() == "VI-JA") {
+                                $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
+                            }
+                      } else if(response.data.error == false) {
+                            $('.loader').addClass('hidden');
+                            rowNew = $.parseJSON(response.data.data);
+                            $scope.listTerminology = [];
+                            if(rowNew){
+                                $.each(rowNew, function( key, value ) {
+                                  $scope.listTerminology.push(value);
+                                });
+                            }
+                            //xu ly search
+                            if ($("#searchAll" ).val() == "Search by") {
+                                $scope.filterOnLocation = $scope.search;
+                            } else if ($("#searchAll" ).val() == "JA-VI") {
+                                $scope.filterOnLocation =  function(terminology) {
+                                      return terminology.tm_japanese_translate.toString().indexOf($scope.search) > -1 || terminology.tm_japanese_higarana.toString().indexOf($scope.search) > -1;
+                                };
+                            } else if ($("#searchAll" ).val() == "VI-JA") {
+                                $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
+                            }
+                      }
+                    });
+                } else {
+                    $scope.listTerminology = [];
                 }
             }
             

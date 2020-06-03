@@ -11,6 +11,15 @@ class TerminologyController extends BaseController
 {
     public function index() {
         $json = array();
+        
+//        $temp = $this->database->getReference('mst_translate_mean')
+//                // order the reference's children by the values in the field 'height'
+//                ->orderByChild('tm_english_translate')
+//                // returns all persons being exactly 1.98 (meters) tall
+//                ->equalTo('Programing language')
+//                ->getValue();
+//        print_r($temp);die;
+
         $listTerminology = $this->database->getReference('mst_translate_mean')->getValue();
         $listSection = $this->database->getReference('mst_section')->getValue();
         
