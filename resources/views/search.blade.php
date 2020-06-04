@@ -83,8 +83,8 @@
                                 <option>JA-VI</option>
                                 <option>VI-JA</option>
                             </select>
-                            <input ng-model="search" class="form-control search" type="text" placeholder="Search" aria-label="Search" style="width: 25%;">
-                            <button type="submit" class="btn btn-info" style="margin-bottom: 10px;" ng-click="actionSearch(null)">Search</button>
+                            <input ng-model="search" class="form-control search" type="text" placeholder="Search" aria-label="Search" style="width: 25%; border-radius: 6px;">
+                            <button type="submit" class="btn btn-info" style="margin-bottom: 10px; height: 28px;" ng-click="actionSearch(null)">Search</button>
                         </td>
                     </tr>
                 </thead>
@@ -148,42 +148,19 @@
             $( "#searchAll" ).click(function() {
                 $(".search").val("");
                 $scope.search = "";
-//                if ($("#searchAll" ).val() == "Search by") {
-//                    $scope.filterOnLocation = $scope.search;
-//                } else if ($("#searchAll" ).val() == "JA-VI") {
-//                    $scope.filterOnLocation = function(terminology) {
-//                          return (terminology.tm_japanese_translate + terminology.tm_japanese_higarana).indexOf($scope.search) >= 0;
-//                    }; 
-//                } else if ($("#searchAll" ).val() == "VI-JA") {
-//                    $(".search").keydown(function(){
-//                      $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
-//                    });
-//                }
             });
             
             let mapTopic = new Map();
             $http.get(MainUrl+'/search').then(function(response){
-              dataTopic = response.data.data.listTopic;
-              if(dataTopic){
-                  var index = 0;
-                  $.each(dataTopic, function( key, value ) {
-                    $scope.listTopic.push(value);
-                    mapTopic.set(index, key);
-                    index++;
-                  });
-              }
-              
-//              let mapTerminology = new Map();
-//              dataTerminology = response.data.data.listTerminology;
-//              if(dataTerminology){
-//                  var index = 0;
-//                  $.each(dataTerminology, function( key, value ) {
-//                    $scope.listTerminology.push(value);
-//                    mapTerminology.set(index, key);
-//                    index++;
-//                  });
-//                  $scope.listTerminologyBackup = $scope.listTerminology;
-//              }
+                dataTopic = response.data.data.listTopic;
+                if(dataTopic){
+                    var index = 0;
+                    $.each(dataTopic, function( key, value ) {
+                      $scope.listTopic.push(value);
+                      mapTopic.set(index, key);
+                      index++;
+                    });
+                }
                 dataTerminology = response.data.data.listTerminology;
                 if(dataTerminology){
                     $.each(dataTerminology, function( key, value ) {
@@ -250,80 +227,6 @@
                 } else {
                     $scope.listTerminology = [];
                 }
-            }
-            
-            $scope.actionSave = function(){
-              $('.control-group').removeClass('error');
-              $('#mgs_sec_id').addClass('hidden');
-              $('#mgs_tm_japanese_translate').addClass('hidden');
-              $('#mgs_tm_japanese_higarana').addClass('hidden');
-              $('#mgs_tm_vietnamese_translate').addClass('hidden');
-              $('.mgs_modal').addClass('hidden');
-              $('.loader').removeClass('hidden');
-              var flag_ok = true;
-              var Url = MainUrl+'/terminology';
-              if(map.get($scope.terminology.index)){
-                Url += '/update';
-                $scope.terminology.keyTerminology = map.get($scope.terminology.index);
-              }
-              if((angular.isUndefined($scope.terminology.sec_id) &&
-                  angular.isUndefined($scope.terminology.tm_japanese_translate) &&
-                  angular.isUndefined($scope.terminology.tm_japanese_higarana) &&
-                  angular.isUndefined($scope.terminology.tm_vietnamese_translate))) {
-                    $('.control-group').addClass('error');
-                    $('#tm_english_translate').parents('.control-group').removeClass('error');
-                    $('#mgs_sec_id').removeClass('hidden');
-                    $('#mgs_tm_japanese_translate').removeClass('hidden');
-                    $('#mgs_tm_japanese_higarana').removeClass('hidden');
-                    $('#mgs_tm_vietnamese_translate').removeClass('hidden');
-                    flag_ok= false;
-              } else if(angular.isUndefined($scope.terminology.sec_id)){
-                $('#sec_id').parents('.control-group').addClass('error');
-                $('#mgs_sec_id').removeClass('hidden');
-                flag_ok= false;
-              } else if(angular.isUndefined($scope.terminology.tm_japanese_translate)){
-                $('#tm_japanese_translate').parents('.control-group').addClass('error');
-                $('#mgs_tm_japanese_translate').removeClass('hidden');
-                flag_ok= false;
-              } else if(angular.isUndefined($scope.terminology.tm_japanese_higarana)){
-                $('#tm_japanese_higarana').parents('.control-group').addClass('error');
-                $('#mgs_tm_japanese_higarana').removeClass('hidden');
-                flag_ok= false;
-              } else if(angular.isUndefined($scope.terminology.tm_vietnamese_translate)){
-                $('#tm_vietnamese_translate').parents('.control-group').addClass('error');
-                $('#mgs_tm_vietnamese_translate').removeClass('hidden');
-                flag_ok= false;
-              }
-              
-              if(flag_ok == false){
-                  $('.loader').addClass('hidden');
-              }
-              
-              if(flag_ok == true){
-                var reData = $.param($scope.terminology);
-                $http.post(Url, reData,
-                {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
-                ).then(function (response){
-                  $('.loader').addClass('hidden');
-                  if(response.data.error == true) {
-                    $('#mgs_modal').html(response.data.data);
-                    $('.mgs_modal').removeClass('hidden');
-                  } else if(response.data.error == false) {
-                    $('#myModal').modal('hide');
-                    rowNew = $.parseJSON(response.data.data);
-                    if(map.get($scope.terminology.index)){
-                      $scope.listTerminology[$scope.terminology.index] = rowNew;
-                      alertify.set('notifier', 'position', 'top-center');
-                      alertify.success('Update row complete.');
-                    } else{
-                      alertify.set('notifier', 'position', 'top-center');
-                      alertify.success('Insert row complete.');
-                      $scope.listTerminology.push(rowNew);
-                      map.set($scope.listTerminology.length-1, response.data.key);
-                    }
-                  }
-                });
-              }
             }
         });
 </script>

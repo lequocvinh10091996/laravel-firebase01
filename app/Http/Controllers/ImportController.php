@@ -21,13 +21,29 @@ class ImportController extends BaseController
         $zipname = 'import_data_web_dictionary'.date("Y-m-d").'.zip';
         $zip = new ZipArchive();
         $zip->open($zipname, ZipArchive::CREATE);
-        $data = array(
-            'mst_account' => $request->mst_account,
-            'mst_translate_mean' => $request->mst_translate_mean,
-            'mst_section' => $request->mst_section,
-            'mst_topic' => $request->mst_topic,
-        );
-        print_r($data['mst_account']);die;
+        print_r($request->file->getClientOriginalName());die;
+        if($request->hasFile('mst_account') || $request->hasFile('mst_translate_mean') || $request->hasFile('mst_section') || $request->hasFile('mst_topic')){
+            $this->validate($request, [
+                'mst_account' => 'file',
+                'mst_translate_mean' => 'file',
+                'mst_section' => 'file',
+                'mst_topic' => 'file',
+            ]);
+            $data = array(
+                'mst_account' => $request->mst_account,
+                'mst_translate_mean' => $request->mst_translate_mean,
+                'mst_section' => $request->mst_section,
+                'mst_topic' => $request->mst_topic,
+            );
+            foreach ($data as $key => $name){
+                if (!empty($name)) {
+                    $name->move('upload/temp', $name->getClientOriginalName());
+                }
+            }
+            $error = false;
+        }
+//        $file_tmp = $_FILES['mst_account']['tmp_name'];
+//        move_uploaded_file($file_tmp,"upload_file/".$request->mst_account);
 //        if ($data['mst_account']) {
 //            $csvname = "mst_account_" . date("Y-m-d") . ".csv";
 //            $csv = Writer::createFromFileObject(new SplTempFileObject());
@@ -142,5 +158,9 @@ class ImportController extends BaseController
 //            // you could also use the temp file method above for this.
 //            unlink($zipname);
 //        }
+        return response([
+            'error' => $error,
+//            'data' => $json,
+        ], 200);
     }
 }

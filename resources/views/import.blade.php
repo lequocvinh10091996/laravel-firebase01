@@ -67,6 +67,15 @@
             <h5>Import CSV</h5>
         </div>
         <div class="widget-content nopadding" >
+            @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
             <span id="listMessage"></span>
             <div class="control-group">
                 @if ($message = Session::get('error'))
@@ -76,7 +85,8 @@
                 </div>
                 @endif
             </div>
-            <form action="{{ route('import') }}">
+            <!--<form action="{{ route('import') }}" enctype="multipart/form-data" method="POST">-->
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -90,38 +100,94 @@
                             <td class="center" style="text-align: center; width: 2%;">1</td>
                             <td>Account</td>
                             <td class="center" style="text-align: center; width: 80%;white-space: nowrap;">
-                                <input type="file" name="mst_account" ng-model="exportCheck.mst_account">
+                                <input type="file" name="mst_account" ng-file="importInput.mst_account">
                             </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">2</td>
                             <td>Terminology</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <input type="file" name="mst_translate_mean" ng-model="exportCheck.mst_translate_mean">
+                                <input type="file" name="mst_translate_mean" ng-file="importInput.mst_translate_mean">
                             </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">3</td>
                             <td>Section</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <input type="file" name="mst_section" ng-model="exportCheck.mst_section">
+                                <input type="file" name="mst_section" ng-file="importInput.mst_section">
                             </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">4</td>
                             <td>Topic</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <input type="file" name="mst_topic" ng-model="exportCheck.mst_topic">
+                                <input type="file" name="mst_topic" ng-file="importInput.mst_topic">
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 </div><br>
                 <button type="submit" class="btn btn-info" style="margin-left: 50%; width: 10%; margin-bottom: 10px;" ng-click="actionImport(null)">Import</button>
-            </form>
+            <!--</form>-->
 <script >
         appName.controller('ImportController', function($scope, $http, MainUrl) {
-            $scope.exportCheck = {};
+            $scope.importInput = {};
+            
+            $scope.actionImport = function()
+            {
+//                if(!angular.isUndefined($scope.search) && $scope.search != ""){
+//                    $('.loader').removeClass('hidden');
+                    //xu ly checkbox
+                    var fd = new FormData();
+                    angular.forEach($scope.importInput.mst_account,function(file){
+                        fd.append('file', file);
+                    });
+                    
+                    var Url = MainUrl+'/import/import';
+//                    var reData = $.param($scope.importInput);
+                    $http.post(Url, fd,
+                    {headers:{'Content-Type': undefined}}
+                    ).then(function (response){
+//                      $('.loader').addClass('hidden');
+                      if(response.data.error == true) {
+                          console.log('erorr');
+//                            $('.loader').addClass('hidden');
+//                            $scope.listTerminology = $scope.listTerminologyBackup;
+//                            if ($("#searchAll" ).val() == "Search by") {
+//                                $scope.filterOnLocation = $scope.search;
+//                            } else if ($("#searchAll" ).val() == "JA-VI") {
+//                                $scope.filterOnLocation =  function(terminology) {
+//                                      return terminology.tm_japanese_translate.toString().indexOf($scope.search) > -1 || terminology.tm_japanese_higarana.toString().indexOf($scope.search) > -1;
+//                                };
+//                            } else if ($("#searchAll" ).val() == "VI-JA") {
+//                                $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
+//                            }
+                      } else if(response.data.error == false) {
+                          console.log('success');
+//                            $('.loader').addClass('hidden');
+//                            rowNew = $.parseJSON(response.data.data);
+//                            $scope.listTerminology = [];
+//                            if(rowNew){
+//                                $.each(rowNew, function( key, value ) {
+//                                  $scope.listTerminology.push(value);
+//                                });
+//                            }
+//                            //xu ly search
+//                            if ($("#searchAll" ).val() == "Search by") {
+//                                $scope.filterOnLocation = $scope.search;
+//                            } else if ($("#searchAll" ).val() == "JA-VI") {
+//                                $scope.filterOnLocation =  function(terminology) {
+//                                      return terminology.tm_japanese_translate.toString().indexOf($scope.search) > -1 || terminology.tm_japanese_higarana.toString().indexOf($scope.search) > -1;
+//                                };
+//                            } else if ($("#searchAll" ).val() == "VI-JA") {
+//                                $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
+//                            }
+                      }
+                    });
+//                } else {
+//                    $scope.listTerminology = [];
+//                }
+            }
         });
 </script>
 

@@ -69,7 +69,7 @@ Route::get('/export/index', function () {
     return view('export', ['controllername' => 'ExportController']);
 });
 
-Route::get('/import/import', 'ImportController@import')->name('import');
+Route::post('/import/import', 'ImportController@import')->name('import');
 Route::get('/import/index', function () {
     return view('import', ['controllername' => 'ImportController']);
 });

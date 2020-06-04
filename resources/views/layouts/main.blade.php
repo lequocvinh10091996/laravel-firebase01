@@ -58,6 +58,35 @@
   }
   
   appName.constant('MainUrl', window.location.protocol + "//" + partLocalhost)
+  
+  appName.directive('ngFile', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+             element.bind('change', function(){
+
+              $parse(attrs.ngFile).assign(scope,element[0].files)
+              scope.$apply();
+             });
+            }
+           };
+   }]);
+//          directive("fileread", [function () {
+//        return {
+//            scope: {
+//                fileread: "="
+//            },
+//            link: function (scope, element, attributes) {
+//                element.bind("change", function (changeEvent) {
+//                    scope.$apply(function () {
+//                        scope.fileread = changeEvent.target.files[0];
+//                        // or all selected files:
+//                        // scope.fileread = changeEvent.target.files;
+//                    });
+//                });
+//            }
+//        }
+//    }]);
 
 </script>
 @if(!session('acc_username'))
