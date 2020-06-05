@@ -94,17 +94,17 @@
                     <tr>
                         <th colspan="2" style="width: 15%;"></th>
                         <th style="text-align: center;" ng-repeat="topic in listTopic">
-                            <b><p style="color: red;"><input type="checkbox" ng-click="checkSearch(topic.tp_key)" id="<% topic.tp_key %>"> <%topic.tp_vietnamese%></p></b>
+                            <b><p style="color: #3498db;"><input type="checkbox" ng-click="checkSearch(topic.tp_key)" id="<% topic.tp_key %>"> <%topic.tp_vietnamese%></p></b>
                         </th>
                     </tr>
                 </thead>
             </table><br>
             <ul class="thumbnails">
                 <li class="span4">
-                    <b><p style="color: red;">Kết quả</p></b>
+                    <b>Kết quả</b>
                 </li>
                 <li class="span8">
-                    <b><p style="color: red;">Chi tiết</p></b>
+                    <b>Chi tiết</b>
                 </li>
             </ul>
             <ul class="thumbnails" dir-paginate="terminology in listTerminology | filter: filterOnLocation  | itemsPerPage: pageSize" current-page="currentPage">

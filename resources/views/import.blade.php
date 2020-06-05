@@ -140,7 +140,16 @@
                     //xu ly checkbox
                     var fd = new FormData();
                     angular.forEach($scope.importInput.mst_account,function(file){
-                        fd.append('file', file);
+                        fd.append('mst_account', file);
+                    });
+                    angular.forEach($scope.importInput.mst_translate_mean,function(file){
+                        fd.append('mst_translate_mean', file);
+                    });
+                    angular.forEach($scope.importInput.mst_section,function(file){
+                        fd.append('mst_section', file);
+                    });
+                    angular.forEach($scope.importInput.mst_topic,function(file){
+                        fd.append('mst_topic', file);
                     });
                     
                     var Url = MainUrl+'/import/import';
@@ -149,7 +158,7 @@
                     {headers:{'Content-Type': undefined}}
                     ).then(function (response){
 //                      $('.loader').addClass('hidden');
-                      if(response.data.error == true) {
+                      if (response.data.error == true) {
                           console.log('erorr');
 //                            $('.loader').addClass('hidden');
 //                            $scope.listTerminology = $scope.listTerminologyBackup;
