@@ -22,48 +22,48 @@ class ExportController extends BaseController
         $zip = new ZipArchive();
         $zip->open($zipname, ZipArchive::CREATE);
         $data = array(
-            'mst_account' => $request->mst_account,
+//            'mst_account' => $request->mst_account,
             'mst_translate_mean' => $request->mst_translate_mean,
             'mst_section' => $request->mst_section,
             'mst_topic' => $request->mst_topic,
         );
-        if ($data['mst_account']) {
-            $csvname = "mst_account_" . date("Y-m-d") . ".csv";
-            $csv = Writer::createFromFileObject(new SplTempFileObject());
-
-            $listAccount = $this->database->getReference('mst_account')->getValue();
-            
-            $csv->insertOne(['Username', 'Email']);
-
-            if ($listAccount) {
-                foreach ($listAccount as $key => $value) {
-                    $listAccountExport[$key] = array(
-                        'acc_username' => $listAccount[$key]['acc_username'],
-                        'acc_email' => $listAccount[$key]['acc_email'],
-                    );
-                }
-            }
-
-            $csv->insertAll($listAccountExport);
-            $zip->addFromString($csvname, $csv->getContent());
-            $error = false;
-        }
+//        if ($data['mst_account']) {
+//            $csvname = "mst_account_" . date("Y-m-d") . ".csv";
+//            $csv = Writer::createFromFileObject(new SplTempFileObject());
+//
+//            $listAccount = $this->database->getReference('mst_account')->getValue();
+//            
+//            $csv->insertOne(['Username', 'Email']);
+//
+//            if ($listAccount) {
+//                foreach ($listAccount as $key => $value) {
+//                    $listAccountExport[$key] = array(
+//                        'acc_username' => $listAccount[$key]['acc_username'],
+//                        'acc_email' => $listAccount[$key]['acc_email'],
+//                    );
+//                }
+//            }
+//
+//            $csv->insertAll($listAccountExport);
+//            $zip->addFromString($csvname, $csv->getContent());
+//            $error = false;
+//        }
         
         if ($data['mst_translate_mean']) {
             $csvname = "terminology_" . date("Y-m-d") . ".csv";
             $csv = Writer::createFromFileObject(new SplTempFileObject());
 
             $listTerminology = $this->database->getReference('mst_translate_mean')->getValue();
-            $listSection = $this->database->getReference('mst_section')->getValue();
-            $csv->insertOne(['Section', 'Japanese', 'Higarana', 'Vietnamese', 'English', 'Example', 'User']);
+//            $listSection = $this->database->getReference('mst_section')->getValue();
+            $csv->insertOne(['Section id', 'Japanese', 'Higarana', 'Vietnamese', 'English', 'Example', 'User']);
             
             if ($listTerminology) {
                 foreach ($listTerminology as $key => $value) {
-                    if (isset($listSection[$value['sec_id']])) {
-                        $listTerminology[$key]['sec_vietnamese'] = $listSection[$value['sec_id']]['sec_vietnamese'];
-                        unset($listTerminology[$key]['sec_id']);
+//                    if (isset($listSection[$value['sec_id']])) {
+//                        $listTerminology[$key]['sec_vietnamese'] = $listSection[$value['sec_id']]['sec_vietnamese'];
+//                        unset($listTerminology[$key]['sec_id']);
                         $listTerminologyExport[$key] = array(
-                            'sec_vietnamese' => $listTerminology[$key]['sec_vietnamese'],
+                            'sec_id' => $listTerminology[$key]['sec_id'],
                             'tm_japanese_translate' => $listTerminology[$key]['tm_japanese_translate'],
                             'tm_japanese_higarana' => $listTerminology[$key]['tm_japanese_higarana'],
                             'tm_vietnamese_translate' => $listTerminology[$key]['tm_vietnamese_translate'],
@@ -71,7 +71,7 @@ class ExportController extends BaseController
                             'tm_example' => $listTerminology[$key]['tm_example'],
                             'tm_insert_user' => $listTerminology[$key]['tm_insert_user']
                         );
-                    }
+//                    }
                 }
             }
 
@@ -86,20 +86,20 @@ class ExportController extends BaseController
             $csv = Writer::createFromFileObject(new SplTempFileObject());
 
             $listSection = $this->database->getReference('mst_section')->getValue();
-            $listTopic = $this->database->getReference('mst_topic')->getValue();
-            $csv->insertOne(['Topic', 'Section vietnamese', 'Section japanese', 'Section description']);
+//            $listTopic = $this->database->getReference('mst_topic')->getValue();
+            $csv->insertOne(['Topic id', 'Section vietnamese', 'Section japanese', 'Section description']);
 
             if ($listSection) {
                 foreach ($listSection as $key => $value) {
-                    if (isset($listTopic[$value['tp_id']])) {
-                        $listSection[$key]['tp_vietnamese'] = $listTopic[$value['tp_id']]['tp_vietnamese'];
+//                    if (isset($listTopic[$value['tp_id']])) {
+//                        $listSection[$key]['tp_vietnamese'] = $listTopic[$value['tp_id']]['tp_vietnamese'];
                         $listSectionExport[$key] = array(
-                            'tp_vietnamese' => $listSection[$key]['tp_vietnamese'],
+                            'tp_id' => $listSection[$key]['tp_id'],
                             'sec_vietnamese' => $listSection[$key]['sec_vietnamese'],
                             'sec_japanese' => $listSection[$key]['sec_japanese'],
                             'sec_description' => $listSection[$key]['sec_description'],
                         );
-                    }
+//                    }
                 }
             }
             $csv->insertAll($listSectionExport);

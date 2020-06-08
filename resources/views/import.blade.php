@@ -29,13 +29,18 @@
                 border: 1px solid #ddd;
             }
             .loader {
-                border: 5px solid #f3f3f3;
+                border: 7px solid #f3f3f3;
                 border-radius: 69%;
-                border-top: 5px solid #3498db;
-                width: 21px;
-                height: 18px;
+                border-top: 7px solid #3498db;
+                width: 50px;
+                height: 50px;
                 -webkit-animation: spin 2s linear infinite;
                 animation: spin 2s linear infinite;
+                position: fixed;
+                background: rgba(255, 255, 255, 0.6);
+		top: 40%;
+		left: 50%;
+                z-index: 9999;
             }
 
               /* Safari */
@@ -63,27 +68,26 @@
                 margin-right: 34%;
             }
         </style>
+        <div class="loader hidden"></div>
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
             <h5>Import CSV</h5>
         </div>
         <div class="widget-content nopadding" >
-            @if (count($errors) > 0)
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
             <span id="listMessage"></span>
             <div class="control-group">
-                @if ($message = Session::get('error'))
-                <div class="alert alert-danger alert-block">
+                <div class="alert alert-danger alert-block importError hidden">
                     <button type="button" class="close" data-dismiss="alert">×</button>
-                    <strong>{{ $message }}</strong>
+                    <strong>Import failed!</strong>
                 </div>
-                @endif
+            </div>
+            <div class="control-group">
+                <div class="alert alert-success alert-block importSuccess hidden">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong><p id="messageImportSuccess"></p></strong>
+                    <strong><p id="messageImportTerminology"></p></strong>
+                    <strong><p id="messageImportSection"></p></strong>
+                    <strong><p id="messageImportTopic"></p></strong>
+                </div>
             </div>
             <!--<form action="{{ route('import') }}" enctype="multipart/form-data" method="POST">-->
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -96,32 +100,32 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+<!--                        <tr>
                             <td class="center" style="text-align: center; width: 2%;">1</td>
                             <td>Account</td>
                             <td class="center" style="text-align: center; width: 80%;white-space: nowrap;">
                                 <input type="file" name="mst_account" ng-file="importInput.mst_account">
                             </td>
+                        </tr>-->
+                        <tr>
+                            <td class="center" style="text-align: center; width: 2%;">1</td>
+                            <td>Terminology</td>
+                            <td class="center" style="text-align: center; width: 80%;white-space: nowrap;">
+                                <input type="file" name="mst_translate_mean" ng-file="importInput.mst_translate_mean" id="mst_translate_mean">
+                            </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">2</td>
-                            <td>Terminology</td>
+                            <td>Section</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <input type="file" name="mst_translate_mean" ng-file="importInput.mst_translate_mean">
+                                <input type="file" name="mst_section" ng-file="importInput.mst_section" id="mst_section">
                             </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">3</td>
-                            <td>Section</td>
-                            <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <input type="file" name="mst_section" ng-file="importInput.mst_section">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="center" style="text-align: center; width: 2%;">4</td>
                             <td>Topic</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <input type="file" name="mst_topic" ng-file="importInput.mst_topic">
+                                <input type="file" name="mst_topic" ng-file="importInput.mst_topic" id="mst_topic">
                             </td>
                         </tr>
                     </tbody>
@@ -135,13 +139,20 @@
             
             $scope.actionImport = function()
             {
-//                if(!angular.isUndefined($scope.search) && $scope.search != ""){
-//                    $('.loader').removeClass('hidden');
+                    $('.loader').removeClass('hidden');
+                    $('.importSuccess').addClass('hidden');
+                    $('#messageImportSuccess').text('');
+                    $('#messageImportTerminology').text('');
+                    $('#messageImportSection').text('');
+                    $('#messageImportTopic').text('');
+                    
+                    $('.importError').addClass('hidden');
+                    
                     //xu ly checkbox
                     var fd = new FormData();
-                    angular.forEach($scope.importInput.mst_account,function(file){
-                        fd.append('mst_account', file);
-                    });
+//                    angular.forEach($scope.importInput.mst_account,function(file){
+//                        fd.append('mst_account', file);
+//                    });
                     angular.forEach($scope.importInput.mst_translate_mean,function(file){
                         fd.append('mst_translate_mean', file);
                     });
@@ -153,113 +164,35 @@
                     });
                     
                     var Url = MainUrl+'/import/import';
-//                    var reData = $.param($scope.importInput);
                     $http.post(Url, fd,
                     {headers:{'Content-Type': undefined}}
                     ).then(function (response){
-//                      $('.loader').addClass('hidden');
+                        $('.filename').text('No file selected');
+                        $('#mst_translate_mean').val('');
+                        $('#mst_section').val('');
+                        $('#mst_topic').val('');
+                        $('.loader').addClass('hidden');
                       if (response.data.error == true) {
-                          console.log('erorr');
-//                            $('.loader').addClass('hidden');
-//                            $scope.listTerminology = $scope.listTerminologyBackup;
-//                            if ($("#searchAll" ).val() == "Search by") {
-//                                $scope.filterOnLocation = $scope.search;
-//                            } else if ($("#searchAll" ).val() == "JA-VI") {
-//                                $scope.filterOnLocation =  function(terminology) {
-//                                      return terminology.tm_japanese_translate.toString().indexOf($scope.search) > -1 || terminology.tm_japanese_higarana.toString().indexOf($scope.search) > -1;
-//                                };
-//                            } else if ($("#searchAll" ).val() == "VI-JA") {
-//                                $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
-//                            }
+                            $('.importError').removeClass('hidden');
                       } else if(response.data.error == false) {
-                          console.log('success');
-//                            $('.loader').addClass('hidden');
-//                            rowNew = $.parseJSON(response.data.data);
-//                            $scope.listTerminology = [];
-//                            if(rowNew){
-//                                $.each(rowNew, function( key, value ) {
-//                                  $scope.listTerminology.push(value);
-//                                });
-//                            }
-//                            //xu ly search
-//                            if ($("#searchAll" ).val() == "Search by") {
-//                                $scope.filterOnLocation = $scope.search;
-//                            } else if ($("#searchAll" ).val() == "JA-VI") {
-//                                $scope.filterOnLocation =  function(terminology) {
-//                                      return terminology.tm_japanese_translate.toString().indexOf($scope.search) > -1 || terminology.tm_japanese_higarana.toString().indexOf($scope.search) > -1;
-//                                };
-//                            } else if ($("#searchAll" ).val() == "VI-JA") {
-//                                $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
-//                            }
+                            $('.importSuccess').removeClass('hidden');
+                            listImport = $.parseJSON(response.data.listImport);
+                            if(listImport){
+                                $('#messageImportSuccess').text('Import success:');
+                                if(listImport.mst_translate_mean != undefined){
+                                    $('#messageImportTerminology').text('  - '+listImport.mst_translate_mean+' (row succes: '+listImport.count_success_mst_translate_mean+', row failed: '+listImport.count_failed_mst_translate_mean+')');
+                                }
+                                if(listImport.mst_section != undefined){
+                                    $('#messageImportSection').text('  - '+listImport.mst_section+' (row succes: '+listImport.count_success_mst_section+', row failed: '+listImport.count_failed_mst_section+')');
+                                }
+                                if(listImport.mst_topic != undefined){
+                                    $('#messageImportTopic').text('  - '+listImport.mst_topic+' (row succes: '+listImport.count_success_mst_topic+', row failed: '+listImport.count_failed_mst_topic+')');
+                                }
+                            }
                       }
                     });
-//                } else {
-//                    $scope.listTerminology = [];
-//                }
             }
         });
 </script>
 
 @endsection
-
-@section('modal-content')
-<!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog" style="display: none;">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title"></h4>
-        </div>
-
-        <div class="modal-body">
-          <div class="widget-content nopadding">
-            <div class="loader hidden"></div>
-            <div class="mgs_modal alert alert-error hidden">
-              <strong id="mgs_modal" ></strong>
-            </div>
-          <form name="frmInsertTopic" action="#" class="form-horizontal" novalidate="novalidate">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <div class="control-group">
-                <label class="control-label">Topic vietnamese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
-              <div class="controls">
-                <input type="t" class="span6" id="tp_vietnamese" name="tp_vietnamese" placeholder="Topic vietnamese "
-                ng-model="topic.tp_vietnamese"
-                ng-required="true" />
-                <span for="tp_vietnamese" generated="true" id="mgs_tp_vietnamese"
-                class="help-inline hidden"
-                >Topic vietnamese  is required and can't be empty</span>
-              </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Topic japanese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
-              <div class="controls">
-                <input type="t" class="span6" id="tp_japanese" name="tp_japanese" placeholder="Topic japanese "
-                ng-model="topic.tp_japanese"
-                ng-required="true" />
-                <span for="tp_japanese" generated="true" id="mgs_tp_japanese"
-                class="help-inline hidden"
-                >Topic japanese  is required and can't be empty</span>
-              </div>
-            </div>
-            <label class="control-label">Topic description :</label>
-            <div class="controls">
-                <textarea rows="4" cols="50" class="span6" id="tp_description " name="tp_description " placeholder="Topic description"
-                          ng-model="topic.tp_description" ng-required="false" >
-                </textarea>
-            </div>
-          </form>
-        </div>
-        </div>
-        <div class="form-actions">
-              <button type="button" class="btn btn-success"
-              ng-click="actionSave(null)">Submit</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-  @endsection

@@ -72,16 +72,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+<!--                        <tr>
                             <td class="center" style="text-align: center; width: 2%;">1</td>
                             <td style="width: 40%;">Account</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
+                                <a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
                                 <input type="checkbox" name="mst_account" ng-model="exportCheck.mst_account">
                             </td>
-                        </tr>
+                        </tr>-->
                         <tr>
-                            <td class="center" style="text-align: center; width: 2%;">2</td>
+                            <td class="center" style="text-align: center; width: 2%;">1</td>
                             <td style="width: 40%;">Terminology</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
                                 <!--<a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
@@ -89,7 +89,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="center" style="text-align: center; width: 2%;">3</td>
+                            <td class="center" style="text-align: center; width: 2%;">2</td>
                             <td style="width: 40%;">Section</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
                                 <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
@@ -97,7 +97,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="center" style="text-align: center; width: 2%;">4</td>
+                            <td class="center" style="text-align: center; width: 2%;">3</td>
                             <td style="width: 40%;">Topic</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
                                 <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
