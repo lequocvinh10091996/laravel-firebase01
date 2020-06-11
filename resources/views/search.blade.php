@@ -78,12 +78,12 @@
                 <thead>
                     <tr>
                         <td colspan="5" style="text-align: center;">
-                            <select id="searchAll" style="width: 7% !important;">
-                                <option>Search by</option>
+                            <select id="searchAll" style="width: 126px !important;">
+                                <option></option>
                                 <option>JA-VI</option>
                                 <option>VI-JA</option>
                             </select>
-                            <input ng-model="search" class="form-control search" type="text" placeholder="Search" aria-label="Search" style="width: 25%; border-radius: 6px;">
+                            <input ng-model="search" class="form-control search" type="text" placeholder="Search" aria-label="Search" style="width: 25%; border-radius: 6px;" ng-keypress="$event.keyCode === 13 && actionSearch(null)">
                             <button type="submit" class="btn btn-info" style="margin-bottom: 10px; height: 28px;" ng-click="actionSearch(null)">Search</button>
                         </td>
                     </tr>
@@ -94,12 +94,12 @@
                     <tr>
                         <th colspan="2" style="width: 15%;"></th>
                         <th style="text-align: center;" ng-repeat="topic in listTopic">
-                            <b><p style="color: #3498db;"><input type="checkbox" ng-click="checkSearch(topic.tp_key)" id="<% topic.tp_key %>"> <%topic.tp_vietnamese%></p></b>
+                            <b><p style="color: #3498db;"><input type="checkbox" ng-click="checkSearch(topic.tp_id)" id="<% topic.tp_id %>"> <%topic.tp_vietnamese%></p></b>
                         </th>
                     </tr>
                 </thead>
             </table><br>
-            <ul class="thumbnails">
+            <ul class="thumbnails labelResult hidden">
                 <li class="span4">
                     <b>Kết quả</b>
                 </li>
@@ -107,7 +107,7 @@
                     <b>Chi tiết</b>
                 </li>
             </ul>
-            <ul class="thumbnails" dir-paginate="terminology in listTerminology | filter: filterOnLocation  | itemsPerPage: pageSize" current-page="currentPage">
+            <ul class="thumbnails" dir-paginate="terminology in listTerminology | filter: filterOnLocation | itemsPerPage: pageSize" current-page="currentPage">
                 <li class="span4">
                     <div class="thumbnail" style="border: 1px solid #3db7f0; background-color: white;">
                         <p style="color: red;"><% terminology.tm_japanese_translate %></p>
@@ -121,11 +121,12 @@
                         <p><% terminology.tm_japanese_higarana %></p>
                         <p><% terminology.tm_vietnamese_translate %></p>
                         <p><% terminology.tm_english_translate %></p>
-                        <p><% terminology.tm_english_translate %></p><br>
+                        <p><% terminology.tm_example %></p><br>
                         <p>Người tạo: <% terminology.tm_insert_user %></p>
                     </div>
                 </li>
             </ul>
+            <div class="hidden" id="notFoundDiv" ng-show="(listTerminology|filter:filterOnLocation).length==0" style="color: red; font-weight: bold">Không tìm thấy thông tin!</div>
         </div><br>
         <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" >
         </dir-pagination-controls>
@@ -140,11 +141,6 @@
             $scope.reData = {};
             
             
-            $(".search").keydown(function(){
-                if($("#searchAll" ).val() == "JA-VI"){
-                    $scope.listTerminology = [];
-                }
-            });
             $( "#searchAll" ).click(function() {
                 $(".search").val("");
                 $scope.search = "";
@@ -194,11 +190,12 @@
                       if(response.data.error == true) {
                             $('.loader').addClass('hidden');
                             $scope.listTerminology = $scope.listTerminologyBackup;
-                            if ($("#searchAll" ).val() == "Search by") {
+                            if ($("#searchAll" ).val() == "") {
                                 $scope.filterOnLocation = $scope.search;
                             } else if ($("#searchAll" ).val() == "JA-VI") {
+                                var searchKey = $scope.search;
                                 $scope.filterOnLocation =  function(terminology) {
-                                      return terminology.tm_japanese_translate.toString().indexOf($scope.search) > -1 || terminology.tm_japanese_higarana.toString().indexOf($scope.search) > -1;
+                                      return terminology.tm_japanese_translate.toString().indexOf(searchKey) > -1 || terminology.tm_japanese_higarana.toString().indexOf(searchKey) > -1;
                                 };
                             } else if ($("#searchAll" ).val() == "VI-JA") {
                                 $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
@@ -213,84 +210,28 @@
                                 });
                             }
                             //xu ly search
-                            if ($("#searchAll" ).val() == "Search by") {
+                            if ($("#searchAll" ).val() == "") {
                                 $scope.filterOnLocation = $scope.search;
                             } else if ($("#searchAll" ).val() == "JA-VI") {
+                                var searchKey = $scope.search;
                                 $scope.filterOnLocation =  function(terminology) {
-                                      return terminology.tm_japanese_translate.toString().indexOf($scope.search) > -1 || terminology.tm_japanese_higarana.toString().indexOf($scope.search) > -1;
+                                      return terminology.tm_japanese_translate.toString().indexOf(searchKey) > -1 || terminology.tm_japanese_higarana.toString().indexOf(searchKey) > -1;
                                 };
                             } else if ($("#searchAll" ).val() == "VI-JA") {
                                 $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
                             }
                       }
+                      console.log($scope.filterOnLocation);
+                      $('.labelResult').removeClass('hidden');
+                      $('#notFoundDiv').removeClass('hidden');
                     });
                 } else {
                     $scope.listTerminology = [];
+                    $('.labelResult').removeClass('hidden');
+                    $('#notFoundDiv').removeClass('hidden');
                 }
             }
         });
 </script>
 
 @endsection
-
-@section('modal-content')
-<!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog" style="display: none;">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title"></h4>
-        </div>
-
-        <div class="modal-body">
-          <div class="widget-content nopadding">
-            <div class="loader hidden"></div>
-            <div class="mgs_modal alert alert-error hidden">
-              <strong id="mgs_modal" ></strong>
-            </div>
-          <form name="frmInsertTopic" action="#" class="form-horizontal" novalidate="novalidate">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <div class="control-group">
-                <label class="control-label">Topic vietnamese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
-              <div class="controls">
-                <input type="t" class="span6" id="tp_vietnamese" name="tp_vietnamese" placeholder="Topic vietnamese "
-                ng-model="topic.tp_vietnamese"
-                ng-required="true" />
-                <span for="tp_vietnamese" generated="true" id="mgs_tp_vietnamese"
-                class="help-inline hidden"
-                >Topic vietnamese  is required and can't be empty</span>
-              </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Topic japanese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
-              <div class="controls">
-                <input type="t" class="span6" id="tp_japanese" name="tp_japanese" placeholder="Topic japanese "
-                ng-model="topic.tp_japanese"
-                ng-required="true" />
-                <span for="tp_japanese" generated="true" id="mgs_tp_japanese"
-                class="help-inline hidden"
-                >Topic japanese  is required and can't be empty</span>
-              </div>
-            </div>
-            <label class="control-label">Topic description :</label>
-            <div class="controls">
-                <textarea rows="4" cols="50" class="span6" id="tp_description " name="tp_description " placeholder="Topic description"
-                          ng-model="topic.tp_description" ng-required="false" >
-                </textarea>
-            </div>
-          </form>
-        </div>
-        </div>
-        <div class="form-actions">
-              <button type="button" class="btn btn-success"
-              ng-click="actionSave(null)">Submit</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-  @endsection

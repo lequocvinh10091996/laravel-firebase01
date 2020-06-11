@@ -72,19 +72,10 @@
                         </tr>
                     </thead>
                     <tbody>
-<!--                        <tr>
-                            <td class="center" style="text-align: center; width: 2%;">1</td>
-                            <td style="width: 40%;">Account</td>
-                            <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>
-                                <input type="checkbox" name="mst_account" ng-model="exportCheck.mst_account">
-                            </td>
-                        </tr>-->
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">1</td>
                             <td style="width: 40%;">Terminology</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('terminologyExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
                                 <input type="checkbox" name="mst_translate_mean" ng-model="exportCheck.mst_translate_mean">
                             </td>
                         </tr>
@@ -92,7 +83,6 @@
                             <td class="center" style="text-align: center; width: 2%;">2</td>
                             <td style="width: 40%;">Section</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
                                 <input type="checkbox" name="mst_section" ng-model="exportCheck.mst_section">
                             </td>
                         </tr>
@@ -100,7 +90,6 @@
                             <td class="center" style="text-align: center; width: 2%;">3</td>
                             <td style="width: 40%;">Topic</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <!--<a href="{{ route('topicExport') }}" class="btn btn-info"><b style="font-size: 14px;">Export</b></a>-->
                                 <input type="checkbox" name="mst_topic" ng-model="exportCheck.mst_topic">
                             </td>
                         </tr>
@@ -116,65 +105,3 @@
 </script>
 
 @endsection
-
-@section('modal-content')
-<!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog" style="display: none;">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title"></h4>
-        </div>
-
-        <div class="modal-body">
-          <div class="widget-content nopadding">
-            <div class="loader hidden"></div>
-            <div class="mgs_modal alert alert-error hidden">
-              <strong id="mgs_modal" ></strong>
-            </div>
-          <form name="frmInsertTopic" action="#" class="form-horizontal" novalidate="novalidate">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <div class="control-group">
-                <label class="control-label">Topic vietnamese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
-              <div class="controls">
-                <input type="t" class="span6" id="tp_vietnamese" name="tp_vietnamese" placeholder="Topic vietnamese "
-                ng-model="topic.tp_vietnamese"
-                ng-required="true" />
-                <span for="tp_vietnamese" generated="true" id="mgs_tp_vietnamese"
-                class="help-inline hidden"
-                >Topic vietnamese  is required and can't be empty</span>
-              </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Topic japanese  <i class="icon icon-asterisk" style="color: red;"></i>:</label>
-              <div class="controls">
-                <input type="t" class="span6" id="tp_japanese" name="tp_japanese" placeholder="Topic japanese "
-                ng-model="topic.tp_japanese"
-                ng-required="true" />
-                <span for="tp_japanese" generated="true" id="mgs_tp_japanese"
-                class="help-inline hidden"
-                >Topic japanese  is required and can't be empty</span>
-              </div>
-            </div>
-            <label class="control-label">Topic description :</label>
-            <div class="controls">
-                <textarea rows="4" cols="50" class="span6" id="tp_description " name="tp_description " placeholder="Topic description"
-                          ng-model="topic.tp_description" ng-required="false" >
-                </textarea>
-            </div>
-          </form>
-        </div>
-        </div>
-        <div class="form-actions">
-              <button type="button" class="btn btn-success"
-              ng-click="actionSave(null)">Submit</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-  @endsection

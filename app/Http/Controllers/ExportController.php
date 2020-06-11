@@ -60,16 +60,16 @@ class ExportController extends BaseController
             if ($listTerminology) {
                 foreach ($listTerminology as $key => $value) {
 //                    if (isset($listSection[$value['sec_id']])) {
-//                        $listTerminology[$key]['sec_vietnamese'] = $listSection[$value['sec_id']]['sec_vietnamese'];
-//                        unset($listTerminology[$key]['sec_id']);
+//                        $value['sec_vietnamese'] = $listSection[$value['sec_id']]['sec_vietnamese'];
+//                        unset($value['sec_id']);
                         $listTerminologyExport[$key] = array(
-                            'sec_id' => $listTerminology[$key]['sec_id'],
-                            'tm_japanese_translate' => $listTerminology[$key]['tm_japanese_translate'],
-                            'tm_japanese_higarana' => $listTerminology[$key]['tm_japanese_higarana'],
-                            'tm_vietnamese_translate' => $listTerminology[$key]['tm_vietnamese_translate'],
-                            'tm_english_translate' => $listTerminology[$key]['tm_english_translate'],
-                            'tm_example' => $listTerminology[$key]['tm_example'],
-                            'tm_insert_user' => $listTerminology[$key]['tm_insert_user']
+                            'sec_id' => $value['sec_id'],
+                            'tm_japanese_translate' => $value['tm_japanese_translate'],
+                            'tm_japanese_higarana' => $value['tm_japanese_higarana'],
+                            'tm_vietnamese_translate' => $value['tm_vietnamese_translate'],
+                            'tm_english_translate' => $value['tm_english_translate'],
+                            'tm_example' => $value['tm_example'],
+                            'tm_insert_user' => $value['tm_insert_user']
                         );
 //                    }
                 }
@@ -92,12 +92,12 @@ class ExportController extends BaseController
             if ($listSection) {
                 foreach ($listSection as $key => $value) {
 //                    if (isset($listTopic[$value['tp_id']])) {
-//                        $listSection[$key]['tp_vietnamese'] = $listTopic[$value['tp_id']]['tp_vietnamese'];
+//                        $value['tp_vietnamese'] = $listTopic[$value['tp_id']]['tp_vietnamese'];
                         $listSectionExport[$key] = array(
-                            'tp_id' => $listSection[$key]['tp_id'],
-                            'sec_vietnamese' => $listSection[$key]['sec_vietnamese'],
-                            'sec_japanese' => $listSection[$key]['sec_japanese'],
-                            'sec_description' => $listSection[$key]['sec_description'],
+                            'tp_id' => $value['tp_id'],
+                            'sec_vietnamese' => $value['sec_vietnamese'],
+                            'sec_japanese' => $value['sec_japanese'],
+                            'sec_description' => $value['sec_description'],
                         );
 //                    }
                 }
@@ -117,9 +117,9 @@ class ExportController extends BaseController
             if ($listTopic) {
                 foreach ($listTopic as $key => $value) {
                     $listTopicExport[$key] = array(
-                        'tp_vietnamese' => $listTopic[$key]['tp_vietnamese'],
-                        'tp_japanese' => $listTopic[$key]['tp_japanese'],
-                        'tp_description' => $listTopic[$key]['tp_description'],
+                        'tp_vietnamese' => $value['tp_vietnamese'],
+                        'tp_japanese' => $value['tp_japanese'],
+                        'tp_description' => $value['tp_description'],
                     );
                 }
             }

@@ -256,8 +256,7 @@
               data = response.data.data.listTopic;
                 if(data){
                     $.each(data, function( key, value ) {
-                      $scope.listTopic.push({tp_id: key,
-                                                 value: value});
+                      $scope.listTopic.push({value: value});
                     });
                 }
             });
@@ -292,7 +291,7 @@
               <div class="controls">
                 <select id="tp_id" name="tp_id" placeholder="Topic" ng-model="section.tp_id" ng-required="true" style="width: 51% !important;">
                   <option   value="" > --- Please choose --- </option>
-                  <option  ng-repeat="topic in listTopic" value="<% topic.tp_id %>" >
+                  <option  ng-repeat="topic in listTopic" value="<% topic.value.tp_id %>" >
                     <% topic.value.tp_vietnamese %>
                   </option>
                 </select>

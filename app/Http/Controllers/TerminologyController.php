@@ -11,24 +11,20 @@ class TerminologyController extends BaseController
 {
     public function index() {
         $json = array();
-        
-//        $temp = $this->database->getReference('mst_translate_mean')
-//                // order the reference's children by the values in the field 'height'
-//                ->orderByChild('tm_english_translate')
-//                // returns all persons being exactly 1.98 (meters) tall
-//                ->equalTo('Programing language')
-//                ->getValue();
-//        print_r($temp);die;
 
         $listTerminology = $this->database->getReference('mst_translate_mean')->getValue();
         $listSection = $this->database->getReference('mst_section')->getValue();
-        
+        if ($listSection) {
+            foreach ($listSection as $key => $value) {
+            $listSection[$value['sec_id']] = $value['sec_vietnamese'];
+            unset($listSection[$key]);
+        }
+        }
         if ($listTerminology) {
             foreach ($listTerminology as $key => $value) {
                 if (isset($listSection[$value['sec_id']])) {
-                    $listTerminology[$key]['sec_vietnamese'] = $listSection[$value['sec_id']]['sec_vietnamese'];
+                    $listTerminology[$key]['sec_vietnamese'] = $listSection[$value['sec_id']];
                 }
-//                $this->database->getReference('mst_translate_mean/' . $key)->update(array('tm_example' => ""));
             }
             $json = json_encode($listTerminology);   
         } 
@@ -42,6 +38,15 @@ class TerminologyController extends BaseController
         $error = true;
         $json = null;
         $key = null;
+        $tmId = 1;
+        $lastId = $this->database->getReference('mst_translate_mean')
+                ->orderByChild('tm_id')
+                // limits the result to the last 10 children (in this case: the 10 tallest persons)
+                ->limitToLast(1)
+                ->getValue();
+        if ($lastId) {
+            $tmId = $lastId[key($lastId)]['tm_id'] + 1;
+        }
         $data = array(
             'sec_id' => $request->sec_id,
             'tm_english_translate' => "$request->tm_english_translate",
@@ -51,6 +56,7 @@ class TerminologyController extends BaseController
             'tm_example' => $request->tm_example,
             'tm_insert_user' => session('acc_username'),
             'tm_flag' => 1,
+            'tm_id' => $tmId
         );
         //insert
         $terminologyId = $this->database->getReference('mst_translate_mean')->push($data)->getKey();
@@ -59,8 +65,12 @@ class TerminologyController extends BaseController
             $currentTerminology = $this->database->getReference('mst_translate_mean/' . $terminologyId)->getValue();
             //get name of id in config type
             $listSection = $this->database->getReference('mst_section')->getValue();
+            foreach ($listSection as $key => $value) {
+                $listSection[$value['sec_id']] = $value['sec_vietnamese'];
+                unset($listSection[$key]);
+            }
             if (isset($listSection[$data['sec_id']])) {
-                $currentTerminology['sec_vietnamese'] = $listSection[$data['sec_id']]['sec_vietnamese'];
+                $currentTerminology['sec_vietnamese'] = $listSection[$data['sec_id']];
             }
             
             $error = false;
@@ -75,15 +85,16 @@ class TerminologyController extends BaseController
     }
 
     public function update(Request $request) {
-        $error = true;
-        $json = 'Not update, something wrong !';
-        $keyTerminology = isset($request->keyTerminology) ? $request->keyTerminology : NULL;
-        if (!$keyTerminology) {
-            return response([
-                'error' => true,
-                'data' => 'Key translate mean not exist !'
-            ], 200);
-        }
+//        $error = true;
+//        $json = 'Not update, something wrong !';
+//        $keyTerminology = isset($request->keyTerminology) ? $request->keyTerminology : NULL;
+        $keyTerminology = $request->keyTerminology;
+//        if (!$keyTerminology) {
+//            return response([
+//                'error' => true,
+//                'data' => 'Key translate mean not exist !'
+//            ], 200);
+//        }
         $data = array(
             'sec_id' => $request->sec_id,
             'tm_english_translate' => isset($request->tm_english_translate) && $request->tm_english_translate != "undefined" ? $request->tm_english_translate : "",
@@ -95,25 +106,29 @@ class TerminologyController extends BaseController
             'tm_flag' => 1,
         );
         //check key exist
-        $reference = $this->database->getReference('mst_translate_mean')->getValue();
-        $keyExist = false;
-        if (isset($reference[$keyTerminology])) {
-            $keyExist = true;
-        }
-        if ($keyExist) {
+//        $reference = $this->database->getReference('mst_translate_mean')->getValue();
+//        $keyExist = false;
+//        if (isset($reference[$keyTerminology])) {
+//            $keyExist = true;
+//        }
+//        if ($keyExist) {
             //update
             $this->database->getReference('mst_translate_mean/' . $keyTerminology)->update($data);
             //get data
             $currentTerminology = $this->database->getReference('mst_translate_mean/' . $keyTerminology)->getValue();
             //get name of id in config type
             $listSection = $this->database->getReference('mst_section')->getValue();
+            foreach ($listSection as $key => $value) {
+                $listSection[$value['sec_id']] = $value['sec_vietnamese'];
+                unset($listSection[$key]);
+            }
             if (isset($listSection[$data['sec_id']])) {
-                $currentTerminology['sec_vietnamese'] = $listSection[$data['sec_id']]['sec_vietnamese'];
+                $currentTerminology['sec_vietnamese'] = $listSection[$data['sec_id']];
             }
             
             $error = false;
             $json = json_encode($currentTerminology);
-        }
+//        }
         return response([
             'error' => $error,
             'data' => $json
@@ -121,13 +136,14 @@ class TerminologyController extends BaseController
     }
 
     public function delete(Request $request) {
-        $keyTerminology = isset($request->keyTerminology) ? $request->keyTerminology : NULL;
-        if (!$keyTerminology) {
-            return response([
-                'error' => true,
-                'data' => 'Key terminology mean not exist !'
-            ], 200);
-        }
+//        $keyTerminology = isset($request->keyTerminology) ? $request->keyTerminology : NULL;
+//        if (!$keyTerminology) {
+//            return response([
+//                'error' => true,
+//                'data' => 'Key terminology mean not exist !'
+//            ], 200);
+//        }
+        $keyTerminology = $request->keyTerminology;
         //delete
         $this->database->getReference('mst_translate_mean/' . $keyTerminology)->remove();
         return response([

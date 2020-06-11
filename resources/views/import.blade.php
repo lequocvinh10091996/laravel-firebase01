@@ -58,14 +58,14 @@
             }
             /* custom css upload file */
             div.uploader span.action {
-                width: 10%;
+                width: 76px;
             }
             div.uploader span.filename {
-                width: 53%;
+                width: 426px;
             }
             div.uploader input {
-                width: 10%;
-                margin-right: 34%;
+                width: 515px;
+                margin-right: 53px;
             }
         </style>
         <div class="loader hidden"></div>
@@ -89,8 +89,70 @@
                     <strong><p id="messageImportTopic"></p></strong>
                 </div>
             </div>
-            <!--<form action="{{ route('import') }}" enctype="multipart/form-data" method="POST">-->
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name data</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="center" style="text-align: center; width: 2%;">1</td>
+                        <td>Terminology</td>
+                        <td class="center" style="text-align: center; width: 80%;white-space: nowrap;">
+                            <input type="file" name="mst_translate_mean" ng-file="importInput.mst_translate_mean" id="mst_translate_mean">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center" style="text-align: center; width: 2%;">2</td>
+                        <td>Section</td>
+                        <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
+                            <input type="file" name="mst_section" ng-file="importInput.mst_section" id="mst_section">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center" style="text-align: center; width: 2%;">3</td>
+                        <td>Topic</td>
+                        <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
+                            <input type="file" name="mst_topic" ng-file="importInput.mst_topic" id="mst_topic">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div><br>
+        <button type="submit" class="btn btn-info" style="margin-left: 50%; width: 10%; margin-bottom: 10px;" ng-click="actionImport(null)">Import</button>
+
+        <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
+            <h5>Delete Data</h5>
+        </div>
+        <div class="widget-content nopadding" >
+            <span id="listMessage"></span>
+            <div class="control-group">
+                @if ($message = Session::get('errorDelete'))
+                <div class="alert alert-danger alert-block">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>{{ $message }}</strong>
+                </div>
+                @endif
+            </div>
+            <div class="control-group">
+                <div class="alert alert-success alert-block deleteSuccess hidden">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong><p id="messageDeleteTerminology"></p></strong>
+                    <strong><p id="messageDeleteSection"></p></strong>
+                    <strong><p id="messageDeleteTopic"></p></strong>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="alert alert-error alert-block deleteFailed hidden">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>Delete failed!</strong>
+                </div>
+            </div>
+            <!--<form action="{{ url('/import/delete') }}">-->
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -100,42 +162,36 @@
                         </tr>
                     </thead>
                     <tbody>
-<!--                        <tr>
-                            <td class="center" style="text-align: center; width: 2%;">1</td>
-                            <td>Account</td>
-                            <td class="center" style="text-align: center; width: 80%;white-space: nowrap;">
-                                <input type="file" name="mst_account" ng-file="importInput.mst_account">
-                            </td>
-                        </tr>-->
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">1</td>
-                            <td>Terminology</td>
-                            <td class="center" style="text-align: center; width: 80%;white-space: nowrap;">
-                                <input type="file" name="mst_translate_mean" ng-file="importInput.mst_translate_mean" id="mst_translate_mean">
+                            <td style="width: 40%;">Terminology</td>
+                            <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
+                                <input type="checkbox" name="mst_translate_mean" ng-model="deleteCheck.mst_translate_mean">
                             </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">2</td>
-                            <td>Section</td>
+                            <td style="width: 40%;">Section</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <input type="file" name="mst_section" ng-file="importInput.mst_section" id="mst_section">
+                                <input type="checkbox" name="mst_section" ng-model="deleteCheck.mst_section">
                             </td>
                         </tr>
                         <tr>
                             <td class="center" style="text-align: center; width: 2%;">3</td>
-                            <td>Topic</td>
+                            <td style="width: 40%;">Topic</td>
                             <td class="center" style="text-align: center; width: 5%;white-space: nowrap;">
-                                <input type="file" name="mst_topic" ng-file="importInput.mst_topic" id="mst_topic">
+                                <input type="checkbox" name="mst_topic" ng-model="deleteCheck.mst_topic">
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                </div><br>
-                <button type="submit" class="btn btn-info" style="margin-left: 50%; width: 10%; margin-bottom: 10px;" ng-click="actionImport(null)">Import</button>
-            <!--</form>-->
+        </div><br>
+        <button type="submit" class="btn btn-danger" style="margin-left: 50%; width: 10%; margin-bottom: 10px;" ng-click="actionDelete(null)">Delete</button>
+<!--</form>-->
 <script >
         appName.controller('ImportController', function($scope, $http, MainUrl) {
             $scope.importInput = {};
+            $scope.deleteCheck = {};
             
             $scope.actionImport = function()
             {
@@ -150,9 +206,6 @@
                     
                     //xu ly checkbox
                     var fd = new FormData();
-//                    angular.forEach($scope.importInput.mst_account,function(file){
-//                        fd.append('mst_account', file);
-//                    });
                     angular.forEach($scope.importInput.mst_translate_mean,function(file){
                         fd.append('mst_translate_mean', file);
                     });
@@ -191,6 +244,41 @@
                             }
                       }
                     });
+            }
+            
+            $scope.actionDelete = function()
+            {
+                $('.loader').removeClass('hidden');
+                $('.deleteSuccess').addClass('hidden');
+                $('#messageDeleteTerminology').text('');
+                $('#messageDeleteSection').text('');
+                $('#messageDeleteTopic').text('');
+                
+                $('.deleteFailed').addClass('hidden');
+                var Url = MainUrl+'/import/delete';
+                var reData = $.param($scope.deleteCheck);
+                $http.post(Url, reData,
+                {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
+                ).then(function (response){
+                    $('.loader').addClass('hidden');
+                  if (response.data.error == true) {
+                      $('.deleteFailed').removeClass('hidden');
+                  } else if(response.data.error == false) {
+                        $('.deleteSuccess').removeClass('hidden');
+                        rowNew = $.parseJSON(response.data.data);
+                        if(rowNew){
+                            if(rowNew.mst_translate_mean == 1){
+                                $('#messageDeleteTerminology').text('Delete success mst_translate_mean');
+                            }
+                            if(rowNew.mst_section == 1){
+                                $('#messageDeleteSection').text('Delete success mst_section');
+                            }
+                            if(rowNew.mst_topic == 1){
+                                $('#messageDeleteTopic').text('Delete success mst_topic');
+                            }
+                        }
+                  }
+                });
             }
         });
 </script>

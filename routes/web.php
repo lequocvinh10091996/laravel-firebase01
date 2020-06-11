@@ -70,6 +70,7 @@ Route::get('/export/index', function () {
 });
 
 Route::post('/import/import', 'ImportController@import')->name('import');
+Route::post('/import/delete', 'ImportController@delete');
 Route::get('/import/index', function () {
     return view('import', ['controllername' => 'ImportController']);
 });

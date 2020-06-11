@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="laravel-app">
 <head>
-<title>Laravel - @yield('title')</title>
+<title>IT Dic - @yield('title')</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -71,22 +71,19 @@
             }
            };
    }]);
-//          directive("fileread", [function () {
-//        return {
-//            scope: {
-//                fileread: "="
-//            },
-//            link: function (scope, element, attributes) {
-//                element.bind("change", function (changeEvent) {
-//                    scope.$apply(function () {
-//                        scope.fileread = changeEvent.target.files[0];
-//                        // or all selected files:
-//                        // scope.fileread = changeEvent.target.files;
-//                    });
-//                });
-//            }
-//        }
-//    }]);
+   appName.directive('ngEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if(event.which === 13) {
+                    scope.$apply(function (){
+                        scope.$eval(attrs.myEnter);
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
+    });
 
 </script>
 @if(!session('acc_username'))
@@ -108,20 +105,6 @@
       <li class=""><a href="#" onclick="togglePage()"><i class="icon icon-list"></i></a></li>
       <li class=""><a title="" href="#"><i class="icon icon-user"></i> <span class="text">Welcome: <b style="color: #49CCED;">{{session('acc_username')}}</b></span></a></li>
       <li class=""><a title="" href="#" onclick="window.location.href = window.location.protocol + '//' + partLocalhost +'/logout';"><i class="icon icon-share-alt"></i> <span class="text">Logout</span></a></li>
-      <!--      <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> <i class="icon icon-cog"></i>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="min-width: 76px;">
-                    <ul style="list-style: none; margin: 0 0 5px 5px;">
-                        <li>
-                            <a href="{{ url('/export/index') }}"><b style="font-size: 14px;">Export</b></a>
-                        </li>
-                        <li>
-                            <a href="{{ url('/import/index') }}"><b style="font-size: 14px;">Import</b></a>
-                        </li>
-                    </ul>
-                </div>
-            </li>-->
       <li>
           <!--<div class="btn-group">-->
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -146,9 +129,6 @@
         <li class="@if($controllername == 'SearchController' ){{'active'}}@endif">
             <a href="{{ url('/search/index') }}"><i class="icon icon-search"></i> <span>Search</span></a>
         </li>
-        <li class="@if($controllername == 'AccountController' ){{'active'}}@endif">
-            <a href="{{ url('/account/index') }}"><i class="icon icon-home"></i> <span>Account</span></a> 
-        </li>
         <li class="@if($controllername == 'TerminologyController' ){{'active'}}@endif">
             <a href="{{ url('/terminology/index') }}"><i class="icon icon-th"></i> <span>Terminology</span></a> 
         </li>
@@ -157,6 +137,9 @@
         </li>
         <li class="@if($controllername == 'TopicController' ){{'active'}}@endif">
             <a href="{{ url('/topic/index') }}"><i class="icon icon-book"></i> <span>Topic</span></a>
+        </li>
+        <li class="@if($controllername == 'AccountController' ){{'active'}}@endif">
+            <a href="{{ url('/account/index') }}"><i class="icon icon-user"></i> <span>Account</span></a> 
         </li>
     </ul>
 </div>
@@ -183,7 +166,7 @@
 
 <!--Footer-part-->
 <div class="row-fluid">
-  <div id="footer" class="span12"> 2019 &copy; Laravel </div>
+  <div id="footer" class="span12"> 2019 &copy; IT Dic </div>
 </div>
 <!--end-Footer-part-->
 

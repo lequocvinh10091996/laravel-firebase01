@@ -56,11 +56,6 @@
           </div>
         </div>
         <label style="margin: 5px 0px -15px 5px;">
-            <select id="searchAll" style="width: 6% !important;">
-                <option>Search by</option>
-                <option>JA-VI</option>
-                <option>VI-JA</option>
-            </select> 
             <input ng-model="search" class="form-control search" type="text" placeholder="Search" aria-label="Search">
         </label><br>
         <div class="widget-content nopadding" >
@@ -70,7 +65,7 @@
                     <tr>
                         <th></th>
                         <th>Section</th>
-                        <th>Japanese Translate</th>
+                        <th>Japanese kanzi</th>
                         <th>Japanese Higarana</th>
                         <th>Vietnamese Translate</th>
                         <th>English Translate</th>
@@ -79,7 +74,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  dir-paginate="terminology in listTerminology | filter: filterOnLocation | itemsPerPage: pageSize" current-page="currentPage">
+                    <tr  dir-paginate="terminology in listTerminology | filter: search | itemsPerPage: pageSize" current-page="currentPage">
                         <td class="center" style="text-align: center; width: 5%;"><% pageSize *(currentPage - 1) + $index + 1 %></td>
                         <td style="width: 15%;"><% terminology.sec_vietnamese %></td>
                         <td><% terminology.tm_japanese_translate %></td>
@@ -117,30 +112,6 @@
           $scope.currentPage = 1;
           $scope.pageSize = 50;
           $scope.terminology = {};
-          $scope.search = '';
-          
-          $(".search").keydown(function(){
-                if($("#searchAll" ).val() == "Search by"){
-                    $scope.filterOnLocation = $scope.search;
-                } else if($("#searchAll" ).val() == "VI-JA") {
-                    $scope.filterOnLocation = '{tm_japanese_translate:'+ $scope.search+ '}';
-                }
-          });
-          $( "#searchAll" ).click(function() {
-              $(".search").val("");
-              if ($("#searchAll" ).val() == "Search by") {
-                  $scope.filterOnLocation = $scope.search;
-              } else if ($("#searchAll" ).val() == "JA-VI") {
-                  $scope.filterOnLocation = function(terminology) {
-                        return (terminology.tm_japanese_translate + terminology.tm_japanese_higarana).indexOf($scope.search) >= 0;
-                  }; 
-              } else if ($("#searchAll" ).val() == "VI-JA") {
-                  $(".search").keydown(function(){
-                    $scope.filterOnLocation = {tm_vietnamese_translate: $scope.search};
-                  });
-              }
-              
-          });
           
           let map = new Map();
           
@@ -241,7 +212,6 @@
               
               if(flag_ok == true){
                 var reData = $.param($scope.terminology);
-                console.log(reData);
                 $http.post(Url, reData,
                 {headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}}
                 ).then(function (response){
@@ -310,8 +280,7 @@
               data = response.data.data.listSection;
                 if(data){
                     $.each(data, function( key, value ) {
-                      $scope.listSection.push({sec_id: key,
-                                                 value: value});
+                      $scope.listSection.push({value: value});
                     });
                 }
             });
@@ -346,7 +315,7 @@
               <div class="controls">
                 <select id="sec_id" name="sec_id" placeholder="Config type" ng-model="terminology.sec_id" ng-required="true" style="width: 52% !important;">
                   <option   value="" > --- Please choose --- </option>
-                  <option  ng-repeat="section in listSection" value="<% section.sec_id %>" >
+                  <option  ng-repeat="section in listSection" value="<% section.value.sec_id %>" >
                     <% section.value.sec_vietnamese %>
                   </option>
                 </select>
@@ -363,7 +332,7 @@
                 ng-required="true" />
                 <span for="tm_japanese_translate" generated="true" id="mgs_tm_japanese_translate"
                 class="help-inline hidden"
-                >Japanese translate is required and can't be empty</span>
+                >Japanese kanzi is required and can't be empty</span>
               </div>
             </div>
             <div class="control-group">

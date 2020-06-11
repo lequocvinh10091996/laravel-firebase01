@@ -7,14 +7,23 @@ use App\Http\Controllers\BaseController;
 
 class SectionController extends BaseController
 {
+    protected $listSection = null;
+    protected $listTopic = null;
+    
     public function index() {
         $json = array();
         $listSection = $this->database->getReference('mst_section')->getValue();
         $listTopic = $this->database->getReference('mst_topic')->getValue();
+        if ($listTopic) {
+            foreach ($listTopic as $key => $value) {
+            $listTopic[$value['tp_id']] = $value['tp_vietnamese'];
+            unset($listTopic[$key]);
+        }
+        }
         if ($listSection) {
             foreach ($listSection as $key => $value) {
                 if (isset($listTopic[$value['tp_id']])) {
-                    $listSection[$key]['tp_vietnamese'] = $listTopic[$value['tp_id']]['tp_vietnamese'];
+                    $listSection[$key]['tp_vietnamese'] = $listTopic[$value['tp_id']];
                 }
             }
             $json = json_encode($listSection);   
@@ -29,12 +38,22 @@ class SectionController extends BaseController
         $error = true;
         $json = null;
         $key = null;
+        $secId = 1;
+        $lastId = $this->database->getReference('mst_section')
+                ->orderByChild('sec_id')
+                // limits the result to the last 10 children (in this case: the 10 tallest persons)
+                ->limitToLast(1)
+                ->getValue();
+        if ($lastId) {
+            $secId = $lastId[key($lastId)]['sec_id'] + 1;
+        }
         $data = array(
             'tp_id' => $request->tp_id,
             'sec_vietnamese' => $request->sec_vietnamese,
             'sec_japanese' => $request->sec_japanese,
             'sec_description' => $request->sec_description,
             'sec_flag' => 1,
+            'sec_id' => $secId,
         );
         //insert
         $sectionId = $this->database->getReference('mst_section')->push($data)->getKey();
@@ -43,8 +62,12 @@ class SectionController extends BaseController
             $currentSection = $this->database->getReference('mst_section/' . $sectionId)->getValue();
             //get name of id in topic
             $listTopic = $this->database->getReference('mst_topic')->getValue();
+            foreach ($listTopic as $key => $value) {
+                $listTopic[$value['tp_id']] = $value['tp_vietnamese'];
+                unset($listTopic[$key]);
+            }
             if (isset($listTopic[$data['tp_id']])) {
-                $currentSection['tp_vietnamese'] = $listTopic[$data['tp_id']]['tp_vietnamese'];
+                $currentSection['tp_vietnamese'] = $listTopic[$data['tp_id']];
             }
             $error = false;
             $json = json_encode($currentSection);
@@ -58,15 +81,16 @@ class SectionController extends BaseController
     }
 
     public function update(Request $request) {
-        $error = true;
-        $json = 'Not update, something wrong !';
-        $keySection = isset($request->keySection) ? $request->keySection : NULL;
-        if (!$keySection) {
-            return response([
-                'error' => true,
-                'data' => 'Key section not exist !'
-            ], 200);
-        }
+//        $error = true;
+//        $json = 'Not update, something wrong !';
+//        $keySection = isset($request->keySection) ? $request->keySection : NULL;
+//        if (!$keySection) {
+//            return response([
+//                'error' => true,
+//                'data' => 'Key section not exist !'
+//            ], 200);
+//        }
+        $keySection = $request->keySection;
         $data = array(
             'tp_id' => $request->tp_id,
             'sec_vietnamese' => $request->sec_vietnamese,
@@ -75,24 +99,28 @@ class SectionController extends BaseController
             'acc_flag' => 1,
         );
         //check key exist
-        $reference = $this->database->getReference('mst_section')->getValue();
-        $keyExist = false;
-        if (isset($reference[$keySection])) {
-            $keyExist = true;
-        }
-        if ($keyExist) {
+//        $reference = $this->database->getReference('mst_section')->getValue();
+//        $keyExist = false;
+//        if (isset($reference[$keySection])) {
+//            $keyExist = true;
+//        }
+//        if ($keyExist) {
             //update
             $this->database->getReference('mst_section/' . $keySection)->update($data);
             //get data
             $currentSection = $this->database->getReference('mst_section/' . $keySection)->getValue();
             //get name of id in topic
             $listTopic = $this->database->getReference('mst_topic')->getValue();
+            foreach ($listTopic as $key => $value) {
+                $listTopic[$value['tp_id']] = $value['tp_vietnamese'];
+                unset($listTopic[$key]);
+            }
             if (isset($listTopic[$data['tp_id']])) {
-                $currentSection['tp_vietnamese'] = $listTopic[$data['tp_id']]['tp_vietnamese'];
+                $currentSection['tp_vietnamese'] = $listTopic[$data['tp_id']];
             }
             $error = false;
             $json = json_encode($currentSection);
-        }
+//        }
         return response([
             'error' => $error,
             'data' => $json
@@ -100,13 +128,14 @@ class SectionController extends BaseController
     }
 
     public function delete(Request $request) {
-        $keySection = isset($request->keySection) ? $request->keySection : NULL;
-        if (!$keySection) {
-            return response([
-                'error' => true,
-                'data' => 'Key section not exist !'
-            ], 200);
-        }
+//        $keySection = isset($request->keySection) ? $request->keySection : NULL;
+//        if (!$keySection) {
+//            return response([
+//                'error' => true,
+//                'data' => 'Key section not exist !'
+//            ], 200);
+//        }
+        $keySection = $request->keySection;
         //delete
         $this->database->getReference('mst_section/' . $keySection)->remove();
         return response([
